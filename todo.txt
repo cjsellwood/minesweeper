@@ -1,0 +1,12 @@
+DONE
+
+IN PROGRESS
+Set up development environment
+
+TODO
+Create App
+Set Up Tests on CI
+Set Up automatic deployment
+fill in readme
+Start screen
+gameboard
