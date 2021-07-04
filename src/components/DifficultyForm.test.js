@@ -70,7 +70,7 @@ describe("Difficulty selection form", () => {
 
       userEvent.click(getByText("Start"));
 
-      expect(startGame).toHaveBeenCalled();
+      expect(startGame).toHaveBeenCalledWith("Easy");
     });
   });
 });
