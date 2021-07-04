@@ -1,26 +1,30 @@
-import logo from "./logo.svg";
-import "./App.css";
 import React from "react";
+import { connect } from "react-redux";
+import DifficultyForm from "./components/DifficultyForm";
 
-function App() {
+const App = (props) => {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {props.startGame ? null : (
+        <div>
+          <h1>Minesweeper</h1>
+          <div>
+            <p>Left click a square to mark a clear space</p>
+            <p>Right click a square to flag a mine</p>
+          </div>
+          <DifficultyForm />
+        </div>
+      )}
     </div>
   );
-}
+};
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    startGame: state.minesweeper.startGame,
+  };
+};
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

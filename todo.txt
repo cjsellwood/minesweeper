@@ -4,9 +4,10 @@ Create App
 Set Up Tests on CI
 Set Up automatic deployment
 fill in readme
+redux setup
+Start screen
 
 IN PROGRESS
 
 TODO
-Start screen
 gameboard
