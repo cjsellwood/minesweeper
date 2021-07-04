@@ -10,9 +10,12 @@ export const Gameboard = (props) => {
             {row.map((square, j) => {
               return (
                 <div key={`${i}-${j}`} data-testid="square" className="square">
-                  {square.mine ? <p>💣</p> : null}
-                  {square.adjacent > 0 ? <p>{square.adjacent}</p> : null}
+                  {square.mine && props.gameOver ? <p>💣</p> : null}
+                  {(square.adjacent > 0 && square.clear) || props.gameOver ? (
+                    <p>{square.adjacent}</p>
+                  ) : null}
                   {square.flag ? <p>🏁</p> : null}
+                  {!square.clear ? <p className="unclear"></p> : null}
                 </div>
               );
             })}

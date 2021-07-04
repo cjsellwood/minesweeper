@@ -6,7 +6,7 @@ describe("Gameboard testing", () => {
   let context;
 
   beforeEach(() => {
-    context = render(<Gameboard board={board} />);
+    context = render(<Gameboard board={board} gameOver={true}/>);
   });
 
   describe("Initially", () => {
