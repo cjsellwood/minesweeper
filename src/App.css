@@ -1,0 +1,31 @@
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Gameboard {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  margin: 0 auto;
+  width: fit-content;
+}
+
+.row {
+  display: flex;
+}
+
+.square {
+  width: 20px;
+  height: 20px;
+  background-color: rgb(140, 180, 255);
+  margin: 1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.square > p {
+  display: block;
+}

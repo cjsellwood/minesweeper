@@ -8,6 +8,7 @@ import {
   calculateAdjacent,
 } from "../actions/minesweeper";
 import minesweeper from "../reducers/minesweeper";
+import {testBoard, testResult} from "./testBoard";
 
 describe("minesweeper redux store", () => {
   describe("storeDifficulty action", () => {
@@ -154,135 +155,7 @@ describe("minesweeper redux store", () => {
 
   describe("calculate adjacent mines function", () => {
     it("should calculate the number of adjacent mines for each square", () => {
-      const board = [
-        [
-          {
-            clear: false,
-            mine: false,
-            flag: false,
-            adjacent: 0,
-          },
-          {
-            clear: false,
-            mine: false,
-            flag: false,
-            adjacent: 0,
-          },
-          {
-            clear: false,
-            mine: true,
-            flag: false,
-            adjacent: 0,
-          },
-        ],
-        [
-          {
-            clear: false,
-            mine: false,
-            flag: false,
-            adjacent: 0,
-          },
-          {
-            clear: false,
-            mine: false,
-            flag: false,
-            adjacent: 0,
-          },
-          {
-            clear: false,
-            mine: true,
-            flag: false,
-            adjacent: 0,
-          },
-        ],
-        [
-          {
-            clear: false,
-            mine: false,
-            flag: false,
-            adjacent: 0,
-          },
-          {
-            clear: false,
-            mine: false,
-            flag: false,
-            adjacent: 0,
-          },
-          {
-            clear: false,
-            mine: false,
-            flag: false,
-            adjacent: 0,
-          },
-        ],
-      ];
-      // [0 2 x]
-      // [0 2 x]
-      // [0 1 1]
-      const result = [
-        [
-          {
-            clear: false,
-            mine: false,
-            flag: false,
-            adjacent: 0,
-          },
-          {
-            clear: false,
-            mine: false,
-            flag: false,
-            adjacent: 2,
-          },
-          {
-            clear: false,
-            mine: true,
-            flag: false,
-            adjacent: 0,
-          },
-        ],
-        [
-          {
-            clear: false,
-            mine: false,
-            flag: false,
-            adjacent: 0,
-          },
-          {
-            clear: false,
-            mine: false,
-            flag: false,
-            adjacent: 2,
-          },
-          {
-            clear: false,
-            mine: true,
-            flag: false,
-            adjacent: 0,
-          },
-        ],
-        [
-          {
-            clear: false,
-            mine: false,
-            flag: false,
-            adjacent: 0,
-          },
-          {
-            clear: false,
-            mine: false,
-            flag: false,
-            adjacent: 1,
-          },
-          {
-            clear: false,
-            mine: false,
-            flag: false,
-            adjacent: 1,
-          },
-        ],
-      ];
-
-      expect(calculateAdjacent(board)).toEqual(result);
+      expect(calculateAdjacent(testBoard)).toEqual(testResult);
     });
   });
 });

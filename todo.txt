@@ -6,8 +6,12 @@ Set Up automatic deployment
 fill in readme
 redux setup
 Start screen
+gameboard generation
 
 IN PROGRESS
+gameboard display
 
 TODO
-gameboard
+Click interactions
+Timer
+Highscores

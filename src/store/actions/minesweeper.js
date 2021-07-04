@@ -83,14 +83,14 @@ export const calculateAdjacent = (board) => {
     for (let j = 0; j < board[i].length; j++) {
       // Break if square is a mine
       if (board[i][j].mine) {
-        break;
+        continue;
       }
       // For each square check the 8 squares surrounding it
       for (let x = i - 1; x <= i + 1; x++) {
         for (let y = j - 1; y <= j + 1; y++) {
           // Break if square is outside boundary
           if (x <= -1 || x >= board.length || y <= -1 || y >= board[i].length) {
-            break;
+            continue;
           }
           if (board[x][y].mine) {
             board[i][j].adjacent = board[i][j].adjacent + 1;

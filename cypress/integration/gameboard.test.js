@@ -9,6 +9,6 @@ describe("Gameboard test", () => {
   });
 
   it("has 100 squares when on easy difficulty", () => {
-    cy.get("div.Gameboard").find("div.Square").should("have.length", 100);
+    cy.get("div.Gameboard").find("div.square").should("have.length", 100);
   });
 });
