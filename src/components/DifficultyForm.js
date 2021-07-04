@@ -3,15 +3,13 @@ import { connect } from "react-redux";
 import * as actions from "../store/actions/index";
 
 export const DifficultyForm = (props) => {
-  // const [difficulty, setDifficulty] = useState("Easy");
-
   const handleChange = (e) => {
     props.storeDifficulty(e.target.value);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.startGame();
+    props.startGame(props.difficulty);
   };
 
   return (
@@ -66,8 +64,8 @@ const mapDispatchToProps = (dispatch) => {
     storeDifficulty: (difficulty) => {
       dispatch(actions.storeDifficulty(difficulty));
     },
-    startGame: () => {
-      dispatch(actions.startGame());
+    startGame: (difficulty) => {
+      dispatch(actions.startGame(difficulty));
     },
   };
 };

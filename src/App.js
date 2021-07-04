@@ -1,6 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import DifficultyForm from "./components/DifficultyForm";
+import Gameboard from "./components/Gameboard";
+import "./reset.css";
+import "./App.css";
 
 const App = (props) => {
   return (
@@ -15,6 +18,7 @@ const App = (props) => {
           <DifficultyForm />
         </div>
       )}
+      {props.startGame ? <Gameboard /> : null}
     </div>
   );
 };
