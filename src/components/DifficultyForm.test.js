@@ -1,14 +1,22 @@
 import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import DifficultyForm from "./DifficultyForm";
+import { DifficultyForm } from "./DifficultyForm";
 
 describe("Difficulty selection form", () => {
   let context;
   let storeDifficulty;
+  let startGame;
 
   beforeEach(() => {
     storeDifficulty = jest.fn().mockName("storeDifficulty");
-    context = render(<DifficultyForm storeDifficulty={storeDifficulty}/>);
+    startGame = jest.fn().mockName("startGame");
+    context = render(
+      <DifficultyForm
+        storeDifficulty={storeDifficulty}
+        startGame={startGame}
+        difficulty={"Easy"}
+      />
+    );
   });
 
   describe("initially", () => {
@@ -22,29 +30,47 @@ describe("Difficulty selection form", () => {
 
   describe("Clicking on a difficulty", () => {
     it("should be checked as medium if clicked on medium checkbox", () => {
-      const { getByTestId } = context;
+      const { getByTestId, rerender } = context;
       userEvent.click(getByTestId("medium-difficulty"));
 
+      rerender(
+        <DifficultyForm
+          storeDifficulty={storeDifficulty}
+          startGame={startGame}
+          difficulty={"Medium"}
+        />
+      );
+
+      expect(storeDifficulty).toHaveBeenCalledWith("Medium");
       expect(getByTestId("easy-difficulty")).not.toHaveAttribute("checked");
       expect(getByTestId("medium-difficulty")).toHaveAttribute("checked");
     });
 
     it("should be checked as medium if clicked on medium label", () => {
-      const { getByText, getByTestId } = context;
+      const { getByText, getByTestId, rerender } = context;
       userEvent.click(getByText("Medium"));
 
+      rerender(
+        <DifficultyForm
+          storeDifficulty={storeDifficulty}
+          startGame={startGame}
+          difficulty={"Medium"}
+        />
+      );
+
+      expect(storeDifficulty).toHaveBeenCalledWith("Medium");
       expect(getByTestId("easy-difficulty")).not.toHaveAttribute("checked");
       expect(getByTestId("medium-difficulty")).toHaveAttribute("checked");
     });
   });
 
   describe("Clicking on start button", () => {
-    it("should call function to store difficulty in redux", () => {
+    it("should call function to start game with chosen difficulty", () => {
       const { getByText } = context;
 
       userEvent.click(getByText("Start"));
 
-      expect(storeDifficulty).toHaveBeenCalledWith("Easy");
+      expect(startGame).toHaveBeenCalled();
     });
   });
 });

@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { connect } from "react-redux";
+import * as actions from "../store/actions/index";
 
-export const DifficultyForm = ({storeDifficulty}) => {
-  const [difficulty, setDifficulty] = useState("Easy");
-  useEffect(() => {}, [difficulty]);
+export const DifficultyForm = (props) => {
+  // const [difficulty, setDifficulty] = useState("Easy");
 
   const handleChange = (e) => {
-    setDifficulty(e.target.value);
+    props.storeDifficulty(e.target.value);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    storeDifficulty(difficulty);
+    props.startGame();
   };
 
   return (
@@ -22,7 +23,7 @@ export const DifficultyForm = ({storeDifficulty}) => {
           name="difficulty"
           id="Easy"
           value="Easy"
-          defaultChecked={difficulty === "Easy"}
+          defaultChecked={props.difficulty === "Easy"}
           onChange={handleChange}
           data-testid="easy-difficulty"
         />
@@ -32,7 +33,7 @@ export const DifficultyForm = ({storeDifficulty}) => {
           name="difficulty"
           id="Medium"
           value="Medium"
-          defaultChecked={difficulty === "Medium"}
+          defaultChecked={props.difficulty === "Medium"}
           onChange={handleChange}
           data-testid="medium-difficulty"
         />
@@ -42,7 +43,7 @@ export const DifficultyForm = ({storeDifficulty}) => {
           name="difficulty"
           id="Hard"
           value="Hard"
-          defaultChecked={difficulty === "Hard"}
+          defaultChecked={props.difficulty === "Hard"}
           onChange={handleChange}
         />
         <label htmlFor="Hard">Hard</label>
@@ -54,4 +55,21 @@ export const DifficultyForm = ({storeDifficulty}) => {
   );
 };
 
-export default DifficultyForm;
+const mapStateToProps = (state) => {
+  return {
+    difficulty: state.minesweeper.difficulty,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    storeDifficulty: (difficulty) => {
+      dispatch(actions.storeDifficulty(difficulty));
+    },
+    startGame: () => {
+      dispatch(actions.startGame());
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DifficultyForm);

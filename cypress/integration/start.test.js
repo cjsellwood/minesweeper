@@ -15,6 +15,6 @@ describe("Start Screen Test", () => {
   it("is hidden once start is pressed", () => {
     cy.visit("/");
     cy.contains("Start").click();
-    cy.get("Minesweeper").should("not.exist");
+    cy.contains("Minesweeper").should("not.exist");
   });
 });

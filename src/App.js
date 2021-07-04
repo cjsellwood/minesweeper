@@ -1,19 +1,30 @@
 import React from "react";
+import { connect } from "react-redux";
 import DifficultyForm from "./components/DifficultyForm";
 
-const App = () => {
+const App = (props) => {
   return (
     <div className="App">
-      <div>
-        <h1>Minesweeper</h1>
+      {props.startGame ? null : (
         <div>
-          <p>Left click a square to mark a clear space</p>
-          <p>Right click a square to flag a mine</p>
+          <h1>Minesweeper</h1>
+          <div>
+            <p>Left click a square to mark a clear space</p>
+            <p>Right click a square to flag a mine</p>
+          </div>
+          <DifficultyForm />
         </div>
-        <DifficultyForm />
-      </div>
+      )}
     </div>
   );
 };
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    startGame: state.minesweeper.startGame,
+  };
+};
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
