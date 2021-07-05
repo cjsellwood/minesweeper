@@ -3,9 +3,16 @@ import { connect } from "react-redux";
 import * as actions from "../store/actions/index";
 
 export const Gameboard = (props) => {
-  const handleClick = (e, row, col) => {
+  const handleRightClick = (e, row, col) => {
     e.preventDefault();
     props.flagSquare(row, col);
+  };
+
+  const handleClick = (row, col) => {
+    if (props.gameOver) {
+      return;
+    }
+    props.clearSquare(row, col);
   };
   return (
     <div className="Gameboard">
@@ -20,10 +27,13 @@ export const Gameboard = (props) => {
                   data-column={j}
                   data-testid="square"
                   className="square"
-                  onContextMenu={(e) => handleClick(e, i, j)}
+                  onContextMenu={(e) => handleRightClick(e, i, j)}
+                  onClick={() => handleClick(i, j)}
                 >
-                  {square.mine && props.gameOver ? <p>💣</p> : null}
-                  {(square.adjacent > 0 && square.clear) || props.gameOver ? (
+                  {square.mine && props.gameOver ? (
+                    <p className="mine">💣</p>
+                  ) : null}
+                  {square.adjacent > 0 && square.clear ? (
                     <p>{square.adjacent}</p>
                   ) : null}
                   {square.flag ? (
@@ -31,7 +41,13 @@ export const Gameboard = (props) => {
                       <p>🏁</p>
                     </div>
                   ) : null}
-                  {!square.clear ? <p className="unclear"></p> : null}
+                  {!square.clear ? (
+                    <p
+                      className={
+                        !props.gameOver ? "unclear" : "unclear-no-hover"
+                      }
+                    ></p>
+                  ) : null}
                 </div>
               );
             })}
@@ -45,6 +61,7 @@ export const Gameboard = (props) => {
 const mapStateToProps = (state) => {
   return {
     board: state.minesweeper.board,
+    gameOver: state.minesweeper.gameOver,
   };
 };
 
@@ -52,6 +69,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     flagSquare: (row, column) => {
       dispatch(actions.flagSquare(row, column));
+    },
+    clearSquare: (row, column) => {
+      dispatch(actions.clearSquare(row, column));
     },
   };
 };
