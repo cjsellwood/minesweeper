@@ -17,9 +17,36 @@ describe("Gameboard test", () => {
     cy.get("div.square").contains("🏁");
   });
 
-  it("removes flag when clicking twice", () => {
+  it("removes flag when right clicking twice", () => {
     cy.get("div.square").first().rightclick();
     cy.get("div.square").first().rightclick();
     cy.get("p.flag").should("not.exist");
+  });
+
+  it("clears a square when left clicking it", () => {
+    cy.get("div.square")
+      .first()
+      .within(() => {
+        cy.get("p.unclear");
+      });
+    cy.get("div.square").first().click();
+    cy.get("div.square")
+      .first()
+      .within(() => {
+        cy.get("p.unclear").should("not.exist");
+      });
+  });
+
+  it("should show all mines if a mine clicked", () => {
+    let mine = 0;
+    cy.get("div.square").each((el) => {
+      if (mine === 0) {
+        el.click();
+        if (el.find("p.mine").length) {
+          mine++;
+        }
+      }
+    });
+    cy.get("div.Gameboard").find("p.mine").should("have.length", 15);
   });
 });

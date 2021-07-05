@@ -1,15 +1,15 @@
 import { applyMiddleware, combineReducers, createStore, compose } from "redux";
 import thunk from "redux-thunk";
-import { storeDifficulty, startGame } from "../actions";
 import {
-  generateBoard,
-  populateMines,
-  flattenArray,
-  calculateAdjacent,
+  storeDifficulty,
+  startGame,
   flagSquare,
-} from "../actions/minesweeper";
+  clearSquare,
+} from "../actions";
 import minesweeper from "../reducers/minesweeper";
-import { testBoard, testResult } from "./testBoard";
+import copyBoard from "../helpers/copyBoard";
+import { flattenArray } from "../helpers/boardGeneration";
+import { testBoard, testResult } from "../helpers/testBoard";
 
 describe("minesweeper redux store", () => {
   describe("storeDifficulty action", () => {
@@ -84,82 +84,6 @@ describe("minesweeper redux store", () => {
     });
   });
 
-  describe("generateBoard function", () => {
-    describe("when called with easy difficulty", () => {
-      it("should return a 10 x 10 array", () => {
-        expect(generateBoard("Easy").length).toEqual(10);
-        expect(generateBoard("Easy")[0].length).toEqual(10);
-        expect(generateBoard("Easy")[9].length).toEqual(10);
-      });
-
-      it("should contain an object with square information in each", () => {
-        expect(generateBoard("Easy")[0][0]).toEqual({
-          clear: false,
-          mine: false,
-          flag: false,
-          adjacent: 0,
-        });
-        expect(generateBoard("Easy")[9][9]).toEqual({
-          clear: false,
-          mine: false,
-          flag: false,
-          adjacent: 0,
-        });
-      });
-    });
-    describe("when called with medium difficulty", () => {
-      it("should return a 20 x 20 array", () => {
-        expect(generateBoard("Medium").length).toEqual(20);
-        expect(generateBoard("Medium")[0].length).toEqual(20);
-        expect(generateBoard("Medium")[19].length).toEqual(20);
-      });
-    });
-    describe("when called with hard difficulty", () => {
-      it("should return a 30 x 30 array", () => {
-        expect(generateBoard("Hard").length).toEqual(30);
-        expect(generateBoard("Hard")[0].length).toEqual(30);
-        expect(generateBoard("Hard")[29].length).toEqual(30);
-      });
-    });
-  });
-
-  describe("populate mines function", () => {
-    it("should add 15 mines on easy difficulty", () => {
-      let board = generateBoard("Easy");
-      board = populateMines("Easy", board);
-
-      expect(
-        flattenArray(board).filter((square) => square.mine === true).length
-      ).toEqual(15);
-    });
-
-    it("should add 135 mines on easy difficulty", () => {
-      let board = generateBoard("Hard");
-      board = populateMines("Hard", board);
-
-      expect(
-        flattenArray(board).filter((square) => square.mine === true).length
-      ).toEqual(135);
-    });
-  });
-
-  describe("flatten array function", () => {
-    it("should turn a 2 dimensional array into a 1 dimensional array", () => {
-      expect(
-        flattenArray([
-          [1, 2],
-          [3, 4],
-        ])
-      ).toEqual([1, 2, 3, 4]);
-    });
-  });
-
-  describe("calculate adjacent mines function", () => {
-    it("should calculate the number of adjacent mines for each square", () => {
-      expect(calculateAdjacent(testBoard)).toEqual(testResult);
-    });
-  });
-
   describe("flagSquare action", () => {
     describe("clicking unclear space", () => {
       let store;
@@ -174,7 +98,7 @@ describe("minesweeper redux store", () => {
 
         const initialState = {
           minesweeper: {
-            board: testBoard,
+            board: copyBoard(testBoard),
           },
         };
 
@@ -202,7 +126,7 @@ describe("minesweeper redux store", () => {
           minesweeper,
         });
 
-        let clearedBoard = testBoard;
+        let clearedBoard = copyBoard(testBoard);
         clearedBoard[0][0].clear = true;
 
         const initialState = {
@@ -234,8 +158,7 @@ describe("minesweeper redux store", () => {
           minesweeper,
         });
 
-        let flaggedBoard = testBoard;
-        flaggedBoard[0][0].clear = false;
+        let flaggedBoard = copyBoard(testBoard);
         flaggedBoard[0][0].flag = true;
 
         const initialState = {
@@ -254,6 +177,150 @@ describe("minesweeper redux store", () => {
       });
       it("should remove the flag", () => {
         expect(store.getState().minesweeper.board[0][0].flag).toEqual(false);
+      });
+    });
+  });
+
+  describe("clear square action", () => {
+    describe("clicking on a square", () => {
+      let store;
+
+      beforeEach(() => {
+        const composeEnhancers =
+          window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+        const rootReducer = combineReducers({
+          minesweeper,
+        });
+
+        const initialState = {
+          minesweeper: {
+            board: copyBoard(testBoard),
+          },
+        };
+
+        store = createStore(
+          rootReducer,
+          initialState,
+          composeEnhancers(applyMiddleware(thunk))
+        );
+
+        return store.dispatch(clearSquare(0, 0));
+      });
+
+      it("should clear the top of the board", () => {
+        expect(store.getState().minesweeper.board[0][0].clear).toEqual(true);
+      });
+    });
+
+    describe("clicking on a flagged square", () => {
+      let store;
+
+      beforeEach(() => {
+        const composeEnhancers =
+          window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+        const rootReducer = combineReducers({
+          minesweeper,
+        });
+
+        const flaggedBoard = copyBoard(testBoard);
+        flaggedBoard[0][0].flag = true;
+
+        const initialState = {
+          minesweeper: {
+            board: flaggedBoard,
+          },
+        };
+
+        store = createStore(
+          rootReducer,
+          initialState,
+          composeEnhancers(applyMiddleware(thunk))
+        );
+
+        return store.dispatch(clearSquare(0, 0));
+      });
+
+      it("should clear the square and remove the flag", () => {
+        expect(store.getState().minesweeper.board[0][0].clear).toEqual(true);
+        expect(store.getState().minesweeper.board[0][0].flag).toEqual(false);
+      });
+    });
+
+    describe("clicking on a square with a mine under it", () => {
+      let store;
+
+      beforeEach(() => {
+        const composeEnhancers =
+          window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+        const rootReducer = combineReducers({
+          minesweeper,
+        });
+
+        const initialState = {
+          minesweeper: {
+            board: copyBoard(testBoard),
+            gameOver: false,
+          },
+        };
+
+        store = createStore(
+          rootReducer,
+          initialState,
+          composeEnhancers(applyMiddleware(thunk))
+        );
+
+        return store.dispatch(clearSquare(0, 2));
+      });
+
+      it("Should set game over to true", () => {
+        expect(store.getState().minesweeper.gameOver).toEqual(true);
+      });
+
+      it("Should clear all mine squares", () => {
+        expect(
+          flattenArray(store.getState().minesweeper.board).filter(
+            (square) => square.mine && square.clear
+          ).length
+        ).toEqual(2);
+      });
+    });
+
+    describe("when clicking on a space with no adjacent mines", () => {
+      let store;
+
+      beforeEach(() => {
+        const composeEnhancers =
+          window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+        const rootReducer = combineReducers({
+          minesweeper,
+        });
+
+        const initialState = {
+          minesweeper: {
+            board: copyBoard(testBoard),
+            gameOver: false,
+          },
+        };
+
+        store = createStore(
+          rootReducer,
+          initialState,
+          composeEnhancers(applyMiddleware(thunk))
+        );
+
+        return store.dispatch(clearSquare(0, 0));
+      });
+      it("should clear the clicked space and any non mine spots touching it", () => {
+        expect(store.getState().minesweeper.board[0][0].clear).toEqual(true);
+        expect(store.getState().minesweeper.board[0][1].clear).toEqual(true);
+        expect(store.getState().minesweeper.board[1][0].clear).toEqual(true);
+        expect(store.getState().minesweeper.board[1][1].clear).toEqual(true);
+        expect(store.getState().minesweeper.board[2][0].clear).toEqual(true);
+        expect(store.getState().minesweeper.board[2][1].clear).toEqual(true);
       });
     });
   });
