@@ -113,3 +113,11 @@ export const startGame = (difficulty) => {
     board,
   };
 };
+
+export const flagSquare = (row, col) => {
+  return {
+    type: actionTypes.FLAG_SQUARE,
+    row,
+    col,
+  };
+};
