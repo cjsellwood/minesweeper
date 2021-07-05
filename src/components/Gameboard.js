@@ -9,6 +9,9 @@ export const Gameboard = (props) => {
   };
 
   const handleClick = (row, col) => {
+    if (props.gameOver) {
+      return;
+    }
     props.clearSquare(row, col);
   };
   return (
@@ -27,7 +30,9 @@ export const Gameboard = (props) => {
                   onContextMenu={(e) => handleRightClick(e, i, j)}
                   onClick={() => handleClick(i, j)}
                 >
-                  {square.mine && props.gameOver ? <p className="mine">💣</p> : null}
+                  {square.mine && props.gameOver ? (
+                    <p className="mine">💣</p>
+                  ) : null}
                   {square.adjacent > 0 && square.clear ? (
                     <p>{square.adjacent}</p>
                   ) : null}
@@ -36,7 +41,13 @@ export const Gameboard = (props) => {
                       <p>🏁</p>
                     </div>
                   ) : null}
-                  {!square.clear ? <p className="unclear"></p> : null}
+                  {!square.clear ? (
+                    <p
+                      className={
+                        !props.gameOver ? "unclear" : "unclear-no-hover"
+                      }
+                    ></p>
+                  ) : null}
                 </div>
               );
             })}

@@ -33,6 +33,17 @@ describe("Gameboard testing", () => {
       fireEvent.contextMenu(getAllByTestId("square")[4]);
       expect(flagSquare).toHaveBeenCalledWith(1, 1);
     });
+
+    it("should do nothing if game is over", () => {
+      const { getAllByTestId, rerender } = context;
+
+      rerender(
+        <Gameboard board={board} flagSquare={flagSquare} gameOver={true} />
+      );
+
+      userEvent.click(getAllByTestId("square")[0]);
+      expect(flagSquare).not.toHaveBeenCalledWith(0, 0);
+    });
   });
 
   describe("Left clicking on a square", () => {
@@ -47,6 +58,17 @@ describe("Gameboard testing", () => {
 
       userEvent.click(getAllByTestId("square")[0]);
       expect(clearSquare).toHaveBeenCalledWith(0, 0);
+    });
+
+    it("should do nothing if game is over", () => {
+      const { getAllByTestId, rerender } = context;
+
+      rerender(
+        <Gameboard board={board} clearSquare={clearSquare} gameOver={true} />
+      );
+
+      userEvent.click(getAllByTestId("square")[0]);
+      expect(clearSquare).not.toHaveBeenCalledWith(0, 0);
     });
   });
 });
