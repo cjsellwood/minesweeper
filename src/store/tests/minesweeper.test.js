@@ -6,9 +6,10 @@ import {
   populateMines,
   flattenArray,
   calculateAdjacent,
+  flagSquare,
 } from "../actions/minesweeper";
 import minesweeper from "../reducers/minesweeper";
-import {testBoard, testResult} from "./testBoard";
+import { testBoard, testResult } from "./testBoard";
 
 describe("minesweeper redux store", () => {
   describe("storeDifficulty action", () => {
@@ -156,6 +157,104 @@ describe("minesweeper redux store", () => {
   describe("calculate adjacent mines function", () => {
     it("should calculate the number of adjacent mines for each square", () => {
       expect(calculateAdjacent(testBoard)).toEqual(testResult);
+    });
+  });
+
+  describe("flagSquare action", () => {
+    describe("clicking unclear space", () => {
+      let store;
+
+      beforeEach(() => {
+        const composeEnhancers =
+          window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+        const rootReducer = combineReducers({
+          minesweeper,
+        });
+
+        const initialState = {
+          minesweeper: {
+            board: testBoard,
+          },
+        };
+
+        store = createStore(
+          rootReducer,
+          initialState,
+          composeEnhancers(applyMiddleware(thunk))
+        );
+
+        return store.dispatch(flagSquare(0, 0));
+      });
+      it("should flag an uncleared space", () => {
+        expect(store.getState().minesweeper.board[0][0].flag).toEqual(true);
+      });
+    });
+
+    describe("clicking cleared space", () => {
+      let store;
+
+      beforeEach(() => {
+        const composeEnhancers =
+          window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+        const rootReducer = combineReducers({
+          minesweeper,
+        });
+
+        let clearedBoard = testBoard;
+        clearedBoard[0][0].clear = true;
+
+        const initialState = {
+          minesweeper: {
+            board: clearedBoard,
+          },
+        };
+
+        store = createStore(
+          rootReducer,
+          initialState,
+          composeEnhancers(applyMiddleware(thunk))
+        );
+
+        return store.dispatch(flagSquare(0, 0));
+      });
+      it("should not add a flag", () => {
+        expect(store.getState().minesweeper.board[0][0].flag).toEqual(false);
+      });
+    });
+    describe("clicking already flagged space", () => {
+      let store;
+
+      beforeEach(() => {
+        const composeEnhancers =
+          window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+        const rootReducer = combineReducers({
+          minesweeper,
+        });
+
+        let flaggedBoard = testBoard;
+        flaggedBoard[0][0].clear = false;
+        flaggedBoard[0][0].flag = true;
+
+        const initialState = {
+          minesweeper: {
+            board: flaggedBoard,
+          },
+        };
+
+        store = createStore(
+          rootReducer,
+          initialState,
+          composeEnhancers(applyMiddleware(thunk))
+        );
+
+        return store.dispatch(flagSquare(0, 0));
+      });
+      it("should remove the flag", () => {
+        expect(store.getState().minesweeper.board[0][0].flag).toEqual(false);
+      });
     });
   });
 });

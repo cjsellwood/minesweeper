@@ -1,2 +1,3 @@
 export const STORE_DIFFICULTY = "STORE_DIFFICULTY";
 export const START_GAME = "START_GAME";
+export const FLAG_SQUARE = "FLAG_SQUARE";

@@ -11,4 +11,15 @@ describe("Gameboard test", () => {
   it("has 100 squares when on easy difficulty", () => {
     cy.get("div.Gameboard").find("div.square").should("have.length", 100);
   });
+
+  it("displays a flag when right clicking on a square", () => {
+    cy.get("div.square").first().rightclick();
+    cy.get("div.square").contains("🏁");
+  });
+
+  it("removes flag when clicking twice", () => {
+    cy.get("div.square").first().rightclick();
+    cy.get("div.square").first().rightclick();
+    cy.get("p.flag").should("not.exist");
+  });
 });

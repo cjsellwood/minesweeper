@@ -1,7 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
+import * as actions from "../store/actions/index";
 
 export const Gameboard = (props) => {
+  const handleClick = (e, row, col) => {
+    e.preventDefault();
+    props.flagSquare(row, col);
+  };
   return (
     <div className="Gameboard">
       {props.board.map((row, i) => {
@@ -9,12 +14,23 @@ export const Gameboard = (props) => {
           <div key={i} className="row">
             {row.map((square, j) => {
               return (
-                <div key={`${i}-${j}`} data-testid="square" className="square">
+                <div
+                  key={`${i}-${j}`}
+                  data-row={i}
+                  data-column={j}
+                  data-testid="square"
+                  className="square"
+                  onContextMenu={(e) => handleClick(e, i, j)}
+                >
                   {square.mine && props.gameOver ? <p>💣</p> : null}
                   {(square.adjacent > 0 && square.clear) || props.gameOver ? (
                     <p>{square.adjacent}</p>
                   ) : null}
-                  {square.flag ? <p>🏁</p> : null}
+                  {square.flag ? (
+                    <div className="flag">
+                      <p>🏁</p>
+                    </div>
+                  ) : null}
                   {!square.clear ? <p className="unclear"></p> : null}
                 </div>
               );
@@ -33,7 +49,11 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    flagSquare: (row, column) => {
+      dispatch(actions.flagSquare(row, column));
+    },
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Gameboard);

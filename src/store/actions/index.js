@@ -1,1 +1,1 @@
-export { storeDifficulty, startGame } from "./minesweeper";
+export { storeDifficulty, startGame, flagSquare } from "./minesweeper";
