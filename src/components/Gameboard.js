@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import * as actions from "../store/actions/index";
 
@@ -23,9 +23,17 @@ export const Gameboard = (props) => {
 
   const [timeDisplay, setTimeDisplay] = useState(0);
 
-  setInterval(() => {
+  const timer = setInterval(() => {
     return setTimeDisplay(Math.floor((Date.now() - props.time) / 1000));
   }, 1000);
+
+  useEffect(() => {
+    return () => {
+      setTimeDisplay(0);
+      clearInterval(timer);
+    };
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <div className="Gameboard">
