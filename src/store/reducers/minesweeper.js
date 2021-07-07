@@ -1,12 +1,14 @@
 import * as actionTypes from "../actions/actionTypes";
 import copyBoard from "../helpers/copyBoard";
 import clearAdjacent from "../helpers/clearAdjacent";
+import { flattenArray } from "../helpers/boardGeneration";
 
 const initialState = {
   difficulty: "Easy",
   startGame: false,
   board: [],
   gameOver: false,
+  winner: false,
 };
 
 const storeDifficulty = (state, action) => {
@@ -53,8 +55,10 @@ const clearSquare = (state, action) => {
 
   // If spot is a mine
   let gameOver = state.gameOver;
+  let winner = state.winner;
   if (boardCopy[action.row][action.col].mine) {
     gameOver = true;
+    winner = false;
 
     // Show all mines
     for (let i = 0; i < boardCopy.length; i++) {
@@ -65,13 +69,24 @@ const clearSquare = (state, action) => {
       }
     }
   } else if (boardCopy[action.row][action.col].adjacent === 0) {
+    // If square with no adjacent mines clear adjacent non mine squares
     boardCopy = clearAdjacent(boardCopy, action.row, action.col);
+  }
+
+  // Check if won
+  if (
+    flattenArray(boardCopy).filter((square) => !square.clear && !square.mine)
+      .length === 0
+  ) {
+    gameOver = true;
+    winner = true;
   }
 
   return {
     ...state,
     board: boardCopy,
     gameOver,
+    winner,
   };
 };
 
