@@ -1,8 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import * as actions from "../store/actions/index";
 
 export const EndScreen = (props) => {
+  useEffect(() => {
+    if (!props.isFetched) {
+      props.fetchScores();
+    }
+    // eslint-disable-next-line
+  }, []);
+
   const [name, setName] = useState("");
   const handleChange = (e) => {
     setName(e.target.value);
@@ -66,6 +73,7 @@ const mapStateToProps = (state) => {
     winner: state.minesweeper.winner,
     winTime: state.minesweeper.winTime,
     scores: state.minesweeper.scores,
+    isFetched: state.minesweeper.isFetched,
   };
 };
 
@@ -76,6 +84,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     submitScore: (name) => {
       dispatch(actions.submitScore(name));
+    },
+    fetchScores: () => {
+      dispatch(actions.fetchScores());
     },
   };
 };

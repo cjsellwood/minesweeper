@@ -1,9 +1,11 @@
 import { EndScreen } from "./EndScreen";
-import { getByPlaceholderText, render } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 describe("EndScreen Testing", () => {
   let context;
+  let fetchScores;
+  fetchScores = jest.fn().mockName("fetchScores");
 
   describe("When game won", () => {
     beforeEach(() => {
@@ -17,6 +19,7 @@ describe("EndScreen Testing", () => {
             Medium: [],
             Hard: [],
           }}
+          fetchScores={fetchScores}
         />
       );
     });
@@ -48,6 +51,7 @@ describe("EndScreen Testing", () => {
             Medium: [],
             Hard: [],
           }}
+          fetchScores={fetchScores}
         />
       );
     });
@@ -77,6 +81,7 @@ describe("EndScreen Testing", () => {
             Medium: [],
             Hard: [],
           }}
+          fetchScores={fetchScores}
         />
       );
     });
@@ -103,6 +108,7 @@ describe("EndScreen Testing", () => {
             Medium: [],
             Hard: [],
           }}
+          fetchScores={fetchScores}
         />
       );
     });
@@ -139,6 +145,7 @@ describe("EndScreen Testing", () => {
               { name: "jack", score: 999 },
             ],
           }}
+          fetchScores={fetchScores}
         />
       );
     });
@@ -148,6 +155,44 @@ describe("EndScreen Testing", () => {
 
       expect(queryByText("bob")).not.toBeNull();
       expect(queryByText("22")).not.toBeNull();
+    });
+  });
+
+  describe("Should load high scores from firebase on first load", () => {
+    it("should call fetchScores", () => {
+      context = render(
+        <EndScreen
+          gameOver={true}
+          winner={true}
+          winTime={7}
+          scores={{
+            Easy: [],
+            Medium: [],
+            Hard: [],
+          }}
+          fetchedScores={false}
+          fetchScores={fetchScores}
+        />
+      );
+      expect(fetchScores).toHaveBeenCalled();
+    });
+
+    it("should not call fetchScores if previously fetched", () => {
+      context = render(
+        <EndScreen
+          gameOver={true}
+          winner={true}
+          winTime={7}
+          scores={{
+            Easy: [],
+            Medium: [],
+            Hard: [],
+          }}
+          isFetched={true}
+          fetchScores={fetchScores}
+        />
+      );
+      expect(fetchScores).not.toHaveBeenCalled();
     });
   });
 });

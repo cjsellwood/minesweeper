@@ -53,6 +53,28 @@ export const submitScore = (name) => {
   };
 };
 
+export const fetchScores = () => {
+  return (dispatch) => {
+    return fetch("https://minesweeper-237c5-default-rtdb.firebaseio.com/scores", {
+      method: "GET",
+      mode: "no-cors",
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+      });
+  };
+};
+
+export const saveFetchedScores = (scores) => {
+  return {
+    type: actionTypes.SAVE_FETCHED_SCORES,
+    scores,
+  };
+};
+
 // export const saveScore = (name, winTime, difficulty) => {
 //   return (dispatch) => {};
 // };

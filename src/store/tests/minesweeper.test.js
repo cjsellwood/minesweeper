@@ -7,6 +7,8 @@ import {
   clearSquare,
   restartGame,
   submitScore,
+  fetchScores,
+  saveFetchedScores,
 } from "../actions";
 import minesweeper from "../reducers/minesweeper";
 import copyBoard from "../helpers/copyBoard";
@@ -426,6 +428,103 @@ describe("minesweeper redux store", () => {
     });
   });
 
+  describe("fetch high score data from firebase", () => {
+    let store;
+    let initialState;
+
+    const fetchMock = jest.spyOn(global, "fetch").mockImplementation(() =>
+      Promise.resolve({
+        json: () => {
+          Promise.resolve(fetched);
+        },
+      })
+    );
+
+    const fetched = {
+      Easy: { "Fire 1": 888, "Water 1": 111 },
+      Medium: { "Fire 2": 999, "Water 2": 1002 },
+      Hard: { "Fire 3": 777 },
+    };
+
+    beforeEach(() => {
+      initialState = {
+        minesweeper: {
+          board: copyBoard(testBoard),
+          gameOver: true,
+          winner: true,
+          difficulty: "Easy",
+          winTime: 10,
+          scores: {
+            Easy: [],
+            Medium: [],
+            Hard: [],
+          },
+        },
+      };
+
+      store = createStore(
+        rootReducer,
+        initialState,
+        composeEnhancers(applyMiddleware(thunk))
+      );
+
+      return store.dispatch(fetchScores());
+    });
+
+    it("should fetch high scores", () => {
+      expect(fetchMock).toHaveBeenCalled(
+        "https://minesweeper-237c5-default-rtdb.firebaseio.com/scores",
+        {
+          method: "GET",
+          mode: "no-cors",
+        }
+      );
+    });
+  });
+
+  describe("saveFetchedScores action", () => {
+    let store;
+    let initialState;
+
+    const fetched = {
+      Easy: { "Fire 1": 888, "Water 1": 111 },
+      Medium: { "Fire 2": 999, "Water 2": 1002 },
+      Hard: { "Fire 3": 777 },
+    };
+
+    beforeEach(() => {
+      initialState = {
+        minesweeper: {
+          board: copyBoard(testBoard),
+          gameOver: true,
+          winner: true,
+          difficulty: "Easy",
+          winTime: 10,
+          scores: {
+            Easy: [],
+            Medium: [],
+            Hard: [],
+          },
+        },
+      };
+
+      store = createStore(
+        rootReducer,
+        initialState,
+        composeEnhancers(applyMiddleware(thunk))
+      );
+
+      return store.dispatch(saveFetchedScores(fetched));
+    });
+
+    it("should save the scores", () => {
+      expect(store.getState().minesweeper.scores.Easy).toEqual([
+        { name: "Water 1", score: 111 },
+        { name: "Fire 1", score: 888 },
+      ]);
+    });
+  });
+
   // describe("save score to firebase action", () => {
   //   let store;
   //   let initialState;
@@ -472,7 +571,7 @@ describe("minesweeper redux store", () => {
   //   });
 
   //   it("should send new score to firebase if better than 10th score", () => {
-      
+
   //   });
   // });
 });
