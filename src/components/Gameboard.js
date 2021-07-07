@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import * as actions from "../store/actions/index";
 
@@ -21,48 +21,65 @@ export const Gameboard = (props) => {
     cypressId = "no-mine";
   }
 
+  const [timeDisplay, setTimeDisplay] = useState(0);
+
+  const timer = setInterval(() => {
+    return setTimeDisplay(Math.floor((Date.now() - props.time) / 1000));
+  }, 1000);
+
+  useEffect(() => {
+    return () => {
+      setTimeDisplay(0);
+      clearInterval(timer);
+    };
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <div className="Gameboard">
-      {props.board.map((row, i) => {
-        return (
-          <div key={i} className="row">
-            {row.map((square, j) => {
-              return (
-                <div
-                  key={`${i}-${j}`}
-                  data-row={i}
-                  data-column={j}
-                  data-testid="square"
-                  data-cypress={square.mine ? null : cypressId}
-                  className="square"
-                  onContextMenu={(e) => handleRightClick(e, i, j)}
-                  onClick={() => handleClick(i, j)}
-                >
-                  {square.mine && props.gameOver && !props.winner ? (
-                    <p className="mine">💣</p>
-                  ) : null}
-                  {square.adjacent > 0 && square.clear ? (
-                    <p>{square.adjacent}</p>
-                  ) : null}
-                  {square.flag ||
-                  (props.gameOver && props.winner && square.mine) ? (
+      <p className="timer">{!props.gameOver ? timeDisplay : props.winTime}</p>
+      <div>
+        {props.board.map((row, i) => {
+          return (
+            <div key={i} className="row">
+              {row.map((square, j) => {
+                return (
+                  <div
+                    key={`${i}-${j}`}
+                    data-row={i}
+                    data-column={j}
+                    data-testid="square"
+                    data-cypress={square.mine ? null : cypressId}
+                    className="square"
+                    onContextMenu={(e) => handleRightClick(e, i, j)}
+                    onClick={() => handleClick(i, j)}
+                  >
+                    {square.mine && props.gameOver && !props.winner ? (
+                      <p className="mine">💣</p>
+                    ) : null}
+                    {square.adjacent > 0 && square.clear ? (
+                      <p>{square.adjacent}</p>
+                    ) : null}
+                    {square.flag ||
+                    (props.gameOver && props.winner && square.mine) ? (
                       <div className="flag">
                         <p>🏁</p>
                       </div>
                     ) : null}
-                  {!square.clear ? (
-                    <p
-                      className={
-                        !props.gameOver ? "unclear" : "unclear-no-hover"
-                      }
-                    ></p>
-                  ) : null}
-                </div>
-              );
-            })}
-          </div>
-        );
-      })}
+                    {!square.clear ? (
+                      <p
+                        className={
+                          !props.gameOver ? "unclear" : "unclear-no-hover"
+                        }
+                      ></p>
+                    ) : null}
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
@@ -72,6 +89,8 @@ const mapStateToProps = (state) => {
     board: state.minesweeper.board,
     gameOver: state.minesweeper.gameOver,
     winner: state.minesweeper.winner,
+    time: state.minesweeper.time,
+    winTime: state.minesweeper.winTime,
   };
 };
 

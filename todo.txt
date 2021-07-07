@@ -9,10 +9,11 @@ Start screen
 gameboard generation
 gameboard display
 Click interactions
-
-IN PROGRESS
 Win condition
-
-TODO
 Timer
 Highscores
+
+IN PROGRESS
+Highscores - firebase
+
+TODO

@@ -6,6 +6,7 @@ import {
   flagSquare,
   clearSquare,
   restartGame,
+  submitScore,
 } from "../actions";
 import minesweeper from "../reducers/minesweeper";
 import copyBoard from "../helpers/copyBoard";
@@ -59,6 +60,8 @@ describe("minesweeper redux store", () => {
             difficulty: "Easy",
             startGame: false,
             board: [],
+            time: Date.now(),
+            winTime: null,
           },
         };
 
@@ -77,6 +80,12 @@ describe("minesweeper redux store", () => {
 
       it("should generate gameboard", () => {
         expect(store.getState().minesweeper.board).not.toEqual([]);
+      });
+
+      it("should save time for timer", () => {
+        expect(Math.floor(store.getState().minesweeper.time / 1000)).toEqual(
+          Math.floor(Date.now() / 1000)
+        );
       });
     });
   });
@@ -282,6 +291,8 @@ describe("minesweeper redux store", () => {
           minesweeper: {
             board: copyBoard(testBoard),
             gameOver: false,
+            time: Date.now(),
+            winTime: null,
           },
         };
 
@@ -306,6 +317,10 @@ describe("minesweeper redux store", () => {
       it("should have gameOver set to true and winner to true", () => {
         expect(store.getState().minesweeper.gameOver).toEqual(true);
         expect(store.getState().minesweeper.winner).toEqual(true);
+      });
+
+      it("time to win should be saved", () => {
+        expect(store.getState().minesweeper.winTime).not.toBeNull();
       });
     });
   });
@@ -338,4 +353,126 @@ describe("minesweeper redux store", () => {
       expect(store.getState().minesweeper.board).toEqual([]);
     });
   });
+
+  describe("submitScore action", () => {
+    let store;
+    let initialState;
+
+    beforeEach(() => {
+      initialState = {
+        minesweeper: {
+          board: copyBoard(testBoard),
+          gameOver: true,
+          winner: true,
+          difficulty: "Easy",
+          winTime: 10,
+          scores: {
+            Easy: [
+              { name: "bob", score: 22 },
+              { name: "bill", score: 28 },
+              { name: "bob2", score: 32 },
+              { name: "bill2", score: 55 },
+              { name: "bob3", score: 59 },
+              { name: "bill3", score: 65 },
+              { name: "bob4", score: 72 },
+              { name: "bill4", score: 95 },
+              { name: "bob5", score: 100 },
+              { name: "bill5", score: 155 },
+            ],
+            Medium: [
+              { name: "mark", score: 25 },
+              { name: "matt", score: 88 },
+            ],
+            Hard: [
+              { name: "jeff", score: 122 },
+              { name: "jack", score: 999 },
+            ],
+          },
+        },
+      };
+
+      store = createStore(
+        rootReducer,
+        initialState,
+        composeEnhancers(applyMiddleware(thunk))
+      );
+
+      return;
+    });
+
+    it("should save the score", () => {
+      store.dispatch(submitScore("test name"));
+      expect(store.getState().minesweeper.scores.Easy[0]).toEqual({
+        name: "test name",
+        score: 10,
+      });
+    });
+
+    it("should not save the score if not better than 10th place", () => {
+      initialState.minesweeper.winTime = 160;
+      store.dispatch(submitScore("test name"));
+      expect(store.getState().minesweeper.scores.Easy).toEqual([
+        { name: "bob", score: 22 },
+        { name: "bill", score: 28 },
+        { name: "bob2", score: 32 },
+        { name: "bill2", score: 55 },
+        { name: "bob3", score: 59 },
+        { name: "bill3", score: 65 },
+        { name: "bob4", score: 72 },
+        { name: "bill4", score: 95 },
+        { name: "bob5", score: 100 },
+        { name: "bill5", score: 155 },
+      ]);
+    });
+  });
+
+  // describe("save score to firebase action", () => {
+  //   let store;
+  //   let initialState;
+  //   beforeEach(() => {
+  //     initialState = {
+  //       minesweeper: {
+  //         board: copyBoard(testBoard),
+  //         gameOver: true,
+  //         winner: true,
+  //         difficulty: "Easy",
+  //         winTime: 10,
+  //         scores: {
+  //           Easy: [
+  //             { name: "bob", score: 22 },
+  //             { name: "bill", score: 28 },
+  //             { name: "bob2", score: 32 },
+  //             { name: "bill2", score: 55 },
+  //             { name: "bob3", score: 59 },
+  //             { name: "bill3", score: 65 },
+  //             { name: "bob4", score: 72 },
+  //             { name: "bill4", score: 95 },
+  //             { name: "bob5", score: 100 },
+  //             { name: "bill5", score: 155 },
+  //           ],
+  //           Medium: [
+  //             { name: "mark", score: 25 },
+  //             { name: "matt", score: 88 },
+  //           ],
+  //           Hard: [
+  //             { name: "jeff", score: 122 },
+  //             { name: "jack", score: 999 },
+  //           ],
+  //         },
+  //       },
+  //     };
+
+  //     store = createStore(
+  //       rootReducer,
+  //       initialState,
+  //       composeEnhancers(applyMiddleware(thunk))
+  //     );
+
+  //     return;
+  //   });
+
+  //   it("should send new score to firebase if better than 10th score", () => {
+      
+  //   });
+  // });
 });

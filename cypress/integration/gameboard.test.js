@@ -50,10 +50,20 @@ describe("Gameboard test", () => {
     cy.get("div.Gameboard").find("p.mine").should("have.length", 15);
   });
 
-  it("should not be able to click once game won and all mines should be flagged", () => {
-    cy.get("div[data-cypress='no-mine']").click({ multiple: true });
-    cy.get("div.square").click({ multiple: true });
-    cy.get("p.mine").should("have.length", 0);
+  it("should have all mines flagged and no mines shown", () => {
+    cy.get("div[data-cypress='no-mine']").each((el) => {
+      el.click();
+    });
     cy.get("div.flag").should("have.length", 15);
+    cy.get("p.mine").should("have.length", 0);
+  });
+
+  it("should contain a timer that starts at 0", () => {
+    cy.get("p.timer").contains(/^0$/);
+  });
+
+  it("timer should change to 1 after 1 second", () => {
+    cy.wait(1000);
+    cy.get("p.timer").contains(/^1$/);
   });
 });

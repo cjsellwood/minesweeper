@@ -8,41 +8,83 @@ describe("After game over screen", () => {
     cy.get("div.EndScreen").should("not.exist");
     cy.get("div.EndScreen").should("not.exist");
   });
+});
 
-  describe("Winning game", () => {
-    beforeEach(() => {
-      cy.get("div[data-cypress='no-mine']").click({ multiple: true });
-    });
+describe("Losing game", () => {
+  before(() => {
+    cy.visit("/");
+    cy.contains("Start").click();
 
-    it("should show that game was won", () => {
-      cy.get("div.EndScreen").contains("You Win");
+    let mine = 0;
+    cy.get("div.square").each((el) => {
+      if (mine === 0) {
+        el.click();
+        if (el.find("p.mine").length) {
+          mine++;
+        }
+      }
     });
   });
 
-  describe("Losing game", () => {
-    beforeEach(() => {
-      let mine = 0;
-      cy.get("div.square").each((el) => {
-        if (mine === 0) {
-          el.click();
-          if (el.find("p.mine").length) {
-            mine++;
-          }
-        }
-      });
-    });
+  it("should show that game was lost", () => {
+    cy.get("div.EndScreen").contains("You Lose");
+  });
 
-    it("should show that game was lost", () => {
-      cy.get("div.EndScreen").contains("You Lose");
-    });
+  it("should not show time taken to win", () => {
+    cy.get("h2.win-time").should("not.exist");
+  });
 
-    it("should contain restart button", () => {
-      cy.contains("Restart");
-    });
+  it("should not show a form to submit score", () => {
+    cy.get("form").should("not.exist");
+  });
 
-    it("should go to start screen if pressing restart", () => {
-      cy.get("button.restart-button").click();
-      cy.contains("Minesweeper");
+  it("should contain restart button", () => {
+    cy.contains("Restart");
+  });
+
+  it("should go to start screen if pressing restart", () => {
+    cy.get("button.restart-button").click();
+    cy.contains("Minesweeper");
+  });
+});
+
+describe("Winning game", () => {
+  before(() => {
+    cy.visit("/");
+    cy.contains("Start").click();
+    cy.get("div[data-cypress='no-mine']").each((el) => {
+      el.click();
     });
+  });
+
+  it("should show that game was won", () => {
+    cy.get("div.EndScreen").contains("You Win");
+  });
+
+  it("should show time taken to win", () => {
+    cy.get("h2.win-time").should("exist");
+  });
+
+  it("should show a scoreboard", () => {
+    cy.get("div.EndScreen").contains("Easy");
+    cy.get("div.EndScreen").contains("Medium");
+    cy.get("div.EndScreen").contains("Hard");
+    cy.get("ol").should("have.length", 3);
+  });
+
+  it("should show a form to submit score", () => {
+    cy.get("form").should("exist");
+    cy.get("form").get("input").should("exist");
+    cy.get("form").get("button[type='submit']").should("exist");
+  });
+
+  it("should allow user to type name", () => {
+    cy.get("form").get("input").type("test name");
+    cy.get("form").get("input").should("have.value", "test name");
+  });
+
+  it("submits score to scoreboard", () => {
+    cy.get("button[type='submit']").click();
+    cy.get("div.EndScreen").contains("test name");
   });
 });

@@ -1,4 +1,4 @@
-import { render, fireEvent, getByTestId } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Gameboard } from "./Gameboard";
 import { testResult as board } from "../store/helpers/testBoard";
@@ -8,12 +8,19 @@ describe("Gameboard testing", () => {
 
   describe("Initially", () => {
     beforeEach(() => {
-      context = render(<Gameboard board={board} gameOver={true} />);
+      context = render(
+        <Gameboard board={board} gameOver={false} time={Date.now()} />
+      );
     });
 
     it("loads 9 boxes with test board", () => {
       const { getAllByTestId } = context;
       expect(getAllByTestId("square").length).toEqual(9);
+    });
+
+    it("shows a timer", () => {
+      const { getByText } = context;
+      expect(getByText("0")).not.toBeNull();
     });
   });
 

@@ -45,3 +45,14 @@ export const restartGame = () => {
     type: actionTypes.RESTART_GAME,
   };
 };
+
+export const submitScore = (name) => {
+  return {
+    type: actionTypes.SUBMIT_SCORE,
+    name,
+  };
+};
+
+// export const saveScore = (name, winTime, difficulty) => {
+//   return (dispatch) => {};
+// };

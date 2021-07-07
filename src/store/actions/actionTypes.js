@@ -3,3 +3,4 @@ export const START_GAME = "START_GAME";
 export const FLAG_SQUARE = "FLAG_SQUARE";
 export const CLEAR_SQUARE = "CLEAR_SQUARE";
 export const RESTART_GAME = "RESTART_GAME";
+export const SUBMIT_SCORE = "SUBMIT_SCORE";

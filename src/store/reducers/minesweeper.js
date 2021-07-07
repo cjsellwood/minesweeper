@@ -9,6 +9,13 @@ const initialState = {
   board: [],
   gameOver: false,
   winner: false,
+  time: 0,
+  winTime: null,
+  scores: {
+    Easy: [],
+    Medium: [],
+    Hard: [],
+  },
 };
 
 const storeDifficulty = (state, action) => {
@@ -23,6 +30,7 @@ const startGame = (state, action) => {
     ...state,
     startGame: action.startGame,
     board: action.board,
+    time: Date.now(),
   };
 };
 
@@ -73,6 +81,7 @@ const clearSquare = (state, action) => {
     boardCopy = clearAdjacent(boardCopy, action.row, action.col);
   }
 
+  let winTime;
   // Check if won
   if (
     flattenArray(boardCopy).filter((square) => !square.clear && !square.mine)
@@ -80,6 +89,7 @@ const clearSquare = (state, action) => {
   ) {
     gameOver = true;
     winner = true;
+    winTime = Math.floor((Date.now() - state.time) / 1000);
   }
 
   return {
@@ -87,6 +97,7 @@ const clearSquare = (state, action) => {
     board: boardCopy,
     gameOver,
     winner,
+    winTime,
   };
 };
 
@@ -97,6 +108,28 @@ const restartGame = (state, action) => {
     startGame: false,
     board: [],
     winner: false,
+  };
+};
+
+const submitScore = (state, action) => {
+  let newScores = [];
+  for (let score of state.scores[state.difficulty]) {
+    newScores.push({ ...score });
+  }
+
+  newScores.push({ name: action.name, score: state.winTime });
+  newScores.sort((a, b) => {
+    return a.score - b.score;
+  });
+
+  newScores = newScores.slice(0, 10);
+
+  return {
+    ...state,
+    scores: {
+      ...state.scores,
+      [state.difficulty]: newScores,
+    },
   };
 };
 
@@ -112,6 +145,8 @@ const reducer = (state = initialState, action) => {
       return clearSquare(state, action);
     case actionTypes.RESTART_GAME:
       return restartGame(state, action);
+    case actionTypes.SUBMIT_SCORE:
+      return submitScore(state, action);
     default:
       return state;
   }
