@@ -3,4 +3,5 @@ export {
   startGame,
   flagSquare,
   clearSquare,
+  restartGame,
 } from "./minesweeper";

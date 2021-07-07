@@ -82,7 +82,7 @@ html * {
   justify-content: center;
   align-items: center;
   animation: endscreen 5s 2s;
-  -webkit-animation: endscreen 3s linear 1.5s forwards;
+  -webkit-animation: endscreen 2.5s linear 1.5s forwards;
   transform: scale(0%);
   -webkit-transform: scale(0%);
   -moz-transform: scale(0%);

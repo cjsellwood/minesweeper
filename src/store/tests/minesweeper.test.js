@@ -5,6 +5,7 @@ import {
   startGame,
   flagSquare,
   clearSquare,
+  restartGame,
 } from "../actions";
 import minesweeper from "../reducers/minesweeper";
 import copyBoard from "../helpers/copyBoard";
@@ -306,6 +307,35 @@ describe("minesweeper redux store", () => {
         expect(store.getState().minesweeper.gameOver).toEqual(true);
         expect(store.getState().minesweeper.winner).toEqual(true);
       });
+    });
+  });
+
+  describe("restartGame action", () => {
+    let store;
+
+    beforeEach(() => {
+      const initialState = {
+        minesweeper: {
+          board: copyBoard(testBoard),
+          gameOver: false,
+        },
+      };
+
+      store = createStore(
+        rootReducer,
+        initialState,
+        composeEnhancers(applyMiddleware(thunk))
+      );
+
+      return store.dispatch(clearSquare(0, 2));
+    });
+
+    it("Should reset state to original", () => {
+      store.dispatch(restartGame());
+      expect(store.getState().minesweeper.gameOver).toEqual(false);
+      expect(store.getState().minesweeper.startGame).toEqual(false);
+      expect(store.getState().minesweeper.winner).toEqual(false);
+      expect(store.getState().minesweeper.board).toEqual([]);
     });
   });
 });
