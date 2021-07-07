@@ -29,7 +29,7 @@ export const Gameboard = (props) => {
 
   return (
     <div className="Gameboard">
-      <p className="timer">{timeDisplay}</p>
+      <p className="timer">{!props.gameOver ? timeDisplay : props.winTime}</p>
       <div>
         {props.board.map((row, i) => {
           return (
@@ -82,6 +82,7 @@ const mapStateToProps = (state) => {
     gameOver: state.minesweeper.gameOver,
     winner: state.minesweeper.winner,
     time: state.minesweeper.time,
+    winTime: state.minesweeper.winTime,
   };
 };
 

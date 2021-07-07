@@ -11,6 +11,11 @@ const initialState = {
   winner: false,
   time: 0,
   winTime: null,
+  scores: {
+    Easy: [],
+    Medium: [],
+    Hard: [],
+  },
 };
 
 const storeDifficulty = (state, action) => {
@@ -106,6 +111,28 @@ const restartGame = (state, action) => {
   };
 };
 
+const submitScore = (state, action) => {
+  let newScores = [];
+  for (let score of state.scores[state.difficulty]) {
+    newScores.push({ ...score });
+  }
+
+  newScores.push({ name: action.name, score: state.winTime });
+  newScores.sort((a, b) => {
+    return a.score - b.score;
+  });
+
+  newScores = newScores.slice(0, 10);
+
+  return {
+    ...state,
+    scores: {
+      ...state.scores,
+      [state.difficulty]: newScores,
+    },
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.STORE_DIFFICULTY:
@@ -118,6 +145,8 @@ const reducer = (state = initialState, action) => {
       return clearSquare(state, action);
     case actionTypes.RESTART_GAME:
       return restartGame(state, action);
+    case actionTypes.SUBMIT_SCORE:
+      return submitScore(state, action);
     default:
       return state;
   }

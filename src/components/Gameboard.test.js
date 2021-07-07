@@ -8,7 +8,9 @@ describe("Gameboard testing", () => {
 
   describe("Initially", () => {
     beforeEach(() => {
-      context = render(<Gameboard board={board} gameOver={true} />);
+      context = render(
+        <Gameboard board={board} gameOver={false} time={Date.now()} />
+      );
     });
 
     it("loads 9 boxes with test board", () => {
