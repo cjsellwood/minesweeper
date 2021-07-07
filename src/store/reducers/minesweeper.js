@@ -90,6 +90,16 @@ const clearSquare = (state, action) => {
   };
 };
 
+const restartGame = (state, action) => {
+  return {
+    ...state,
+    gameOver: false,
+    startGame: false,
+    board: [],
+    winner: false,
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.STORE_DIFFICULTY:
@@ -100,6 +110,8 @@ const reducer = (state = initialState, action) => {
       return flagSquare(state, action);
     case actionTypes.CLEAR_SQUARE:
       return clearSquare(state, action);
+    case actionTypes.RESTART_GAME:
+      return restartGame(state, action);
     default:
       return state;
   }

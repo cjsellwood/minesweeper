@@ -39,3 +39,9 @@ export const clearSquare = (row, col) => {
     col,
   };
 };
+
+export const restartGame = () => {
+  return {
+    type: actionTypes.RESTART_GAME,
+  };
+};
