@@ -7,11 +7,12 @@ fill in readme
 redux setup
 Start screen
 gameboard generation
+gameboard display
+Click interactions
 
 IN PROGRESS
-gameboard display
+Win condition
 
 TODO
-Click interactions
 Timer
 Highscores

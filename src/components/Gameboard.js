@@ -14,6 +14,13 @@ export const Gameboard = (props) => {
     }
     props.clearSquare(row, col);
   };
+
+  // Add id for testing cypress win condition clicking all non mines
+  let cypressId = null;
+  if (process.env.NODE_ENV === "development") {
+    cypressId = "no-mine";
+  }
+
   return (
     <div className="Gameboard">
       {props.board.map((row, i) => {
@@ -26,21 +33,23 @@ export const Gameboard = (props) => {
                   data-row={i}
                   data-column={j}
                   data-testid="square"
+                  data-cypress={square.mine ? null : cypressId}
                   className="square"
                   onContextMenu={(e) => handleRightClick(e, i, j)}
                   onClick={() => handleClick(i, j)}
                 >
-                  {square.mine && props.gameOver ? (
+                  {square.mine && props.gameOver && !props.winner ? (
                     <p className="mine">💣</p>
                   ) : null}
                   {square.adjacent > 0 && square.clear ? (
                     <p>{square.adjacent}</p>
                   ) : null}
-                  {square.flag ? (
-                    <div className="flag">
-                      <p>🏁</p>
-                    </div>
-                  ) : null}
+                  {square.flag ||
+                  (props.gameOver && props.winner && square.mine) ? (
+                      <div className="flag">
+                        <p>🏁</p>
+                      </div>
+                    ) : null}
                   {!square.clear ? (
                     <p
                       className={
@@ -62,6 +71,7 @@ const mapStateToProps = (state) => {
   return {
     board: state.minesweeper.board,
     gameOver: state.minesweeper.gameOver,
+    winner: state.minesweeper.winner,
   };
 };
 

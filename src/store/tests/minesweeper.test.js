@@ -9,21 +9,24 @@ import {
 import minesweeper from "../reducers/minesweeper";
 import copyBoard from "../helpers/copyBoard";
 import { flattenArray } from "../helpers/boardGeneration";
-import { testBoard, testResult } from "../helpers/testBoard";
+import { testBoard } from "../helpers/testBoard";
 
 describe("minesweeper redux store", () => {
+  let rootReducer;
+  let composeEnhancers;
+  beforeEach(() => {
+    composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+    rootReducer = combineReducers({
+      minesweeper,
+    });
+  });
+
   describe("storeDifficulty action", () => {
     describe("when action called with medium difficulty", () => {
       let store;
 
       beforeEach(() => {
-        const composeEnhancers =
-          window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-        const rootReducer = combineReducers({
-          minesweeper,
-        });
-
         const initialState = {
           minesweeper: {
             difficulty: "Easy",
@@ -50,13 +53,6 @@ describe("minesweeper redux store", () => {
       let store;
 
       beforeEach(() => {
-        const composeEnhancers =
-          window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-        const rootReducer = combineReducers({
-          minesweeper,
-        });
-
         const initialState = {
           minesweeper: {
             difficulty: "Easy",
@@ -89,13 +85,6 @@ describe("minesweeper redux store", () => {
       let store;
 
       beforeEach(() => {
-        const composeEnhancers =
-          window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-        const rootReducer = combineReducers({
-          minesweeper,
-        });
-
         const initialState = {
           minesweeper: {
             board: copyBoard(testBoard),
@@ -119,13 +108,6 @@ describe("minesweeper redux store", () => {
       let store;
 
       beforeEach(() => {
-        const composeEnhancers =
-          window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-        const rootReducer = combineReducers({
-          minesweeper,
-        });
-
         let clearedBoard = copyBoard(testBoard);
         clearedBoard[0][0].clear = true;
 
@@ -151,13 +133,6 @@ describe("minesweeper redux store", () => {
       let store;
 
       beforeEach(() => {
-        const composeEnhancers =
-          window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-        const rootReducer = combineReducers({
-          minesweeper,
-        });
-
         let flaggedBoard = copyBoard(testBoard);
         flaggedBoard[0][0].flag = true;
 
@@ -186,13 +161,6 @@ describe("minesweeper redux store", () => {
       let store;
 
       beforeEach(() => {
-        const composeEnhancers =
-          window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-        const rootReducer = combineReducers({
-          minesweeper,
-        });
-
         const initialState = {
           minesweeper: {
             board: copyBoard(testBoard),
@@ -217,13 +185,6 @@ describe("minesweeper redux store", () => {
       let store;
 
       beforeEach(() => {
-        const composeEnhancers =
-          window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-        const rootReducer = combineReducers({
-          minesweeper,
-        });
-
         const flaggedBoard = copyBoard(testBoard);
         flaggedBoard[0][0].flag = true;
 
@@ -252,13 +213,6 @@ describe("minesweeper redux store", () => {
       let store;
 
       beforeEach(() => {
-        const composeEnhancers =
-          window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-        const rootReducer = combineReducers({
-          minesweeper,
-        });
-
         const initialState = {
           minesweeper: {
             board: copyBoard(testBoard),
@@ -275,8 +229,9 @@ describe("minesweeper redux store", () => {
         return store.dispatch(clearSquare(0, 2));
       });
 
-      it("Should set game over to true", () => {
+      it("Should set game over to true and winner to false", () => {
         expect(store.getState().minesweeper.gameOver).toEqual(true);
+        expect(store.getState().minesweeper.winner).toEqual(false);
       });
 
       it("Should clear all mine squares", () => {
@@ -292,13 +247,6 @@ describe("minesweeper redux store", () => {
       let store;
 
       beforeEach(() => {
-        const composeEnhancers =
-          window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-        const rootReducer = combineReducers({
-          minesweeper,
-        });
-
         const initialState = {
           minesweeper: {
             board: copyBoard(testBoard),
@@ -314,6 +262,7 @@ describe("minesweeper redux store", () => {
 
         return store.dispatch(clearSquare(0, 0));
       });
+
       it("should clear the clicked space and any non mine spots touching it", () => {
         expect(store.getState().minesweeper.board[0][0].clear).toEqual(true);
         expect(store.getState().minesweeper.board[0][1].clear).toEqual(true);
@@ -321,6 +270,41 @@ describe("minesweeper redux store", () => {
         expect(store.getState().minesweeper.board[1][1].clear).toEqual(true);
         expect(store.getState().minesweeper.board[2][0].clear).toEqual(true);
         expect(store.getState().minesweeper.board[2][1].clear).toEqual(true);
+      });
+    });
+
+    describe("clicking all non mine spaces should end the game", () => {
+      let store;
+
+      beforeEach(() => {
+        const initialState = {
+          minesweeper: {
+            board: copyBoard(testBoard),
+            gameOver: false,
+          },
+        };
+
+        store = createStore(
+          rootReducer,
+          initialState,
+          composeEnhancers(applyMiddleware(thunk))
+        );
+
+        // Clear all non mine squares
+        store.dispatch(clearSquare(0, 0));
+        store.dispatch(clearSquare(0, 1));
+        store.dispatch(clearSquare(1, 0));
+        store.dispatch(clearSquare(1, 1));
+        store.dispatch(clearSquare(2, 0));
+        store.dispatch(clearSquare(2, 1));
+        store.dispatch(clearSquare(2, 2));
+
+        return;
+      });
+
+      it("should have gameOver set to true and winner to true", () => {
+        expect(store.getState().minesweeper.gameOver).toEqual(true);
+        expect(store.getState().minesweeper.winner).toEqual(true);
       });
     });
   });
