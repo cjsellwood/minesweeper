@@ -9,7 +9,7 @@ html * {
   height: 100vh;
 }
 
-.Gameboard {
+.Gameboard > div  {
   display: flex;
   flex-direction: column;
   background-color: black;

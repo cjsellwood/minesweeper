@@ -21,7 +21,11 @@ module.exports = {
   },
   plugins: ["react", "prettier", "jest", "cypress"],
   rules: {
-    indent: ["error", 2, {"SwitchCase": 1}],
+    indent: [
+      "error",
+      2,
+      { SwitchCase: 1, ignoredNodes: ["ConditionalExpression"] },
+    ],
     "linebreak-style": ["error", "unix"],
     quotes: ["error", "double"],
     semi: ["error", "always"],

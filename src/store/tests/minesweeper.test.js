@@ -59,6 +59,8 @@ describe("minesweeper redux store", () => {
             difficulty: "Easy",
             startGame: false,
             board: [],
+            time: Date.now(),
+            winTime: null,
           },
         };
 
@@ -77,6 +79,12 @@ describe("minesweeper redux store", () => {
 
       it("should generate gameboard", () => {
         expect(store.getState().minesweeper.board).not.toEqual([]);
+      });
+
+      it("should save time for timer", () => {
+        expect(Math.floor(store.getState().minesweeper.time / 1000)).toEqual(
+          Math.floor(Date.now() / 1000)
+        );
       });
     });
   });
@@ -282,6 +290,8 @@ describe("minesweeper redux store", () => {
           minesweeper: {
             board: copyBoard(testBoard),
             gameOver: false,
+            time: Date.now(),
+            winTime: null,
           },
         };
 
@@ -306,6 +316,10 @@ describe("minesweeper redux store", () => {
       it("should have gameOver set to true and winner to true", () => {
         expect(store.getState().minesweeper.gameOver).toEqual(true);
         expect(store.getState().minesweeper.winner).toEqual(true);
+      });
+
+      it("time to win should be saved", () => {
+        expect(store.getState().minesweeper.winTime).not.toBeNull();
       });
     });
   });

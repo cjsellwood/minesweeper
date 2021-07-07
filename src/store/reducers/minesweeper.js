@@ -9,6 +9,8 @@ const initialState = {
   board: [],
   gameOver: false,
   winner: false,
+  time: 0,
+  winTime: null,
 };
 
 const storeDifficulty = (state, action) => {
@@ -23,6 +25,7 @@ const startGame = (state, action) => {
     ...state,
     startGame: action.startGame,
     board: action.board,
+    time: Date.now(),
   };
 };
 
@@ -73,6 +76,7 @@ const clearSquare = (state, action) => {
     boardCopy = clearAdjacent(boardCopy, action.row, action.col);
   }
 
+  let winTime;
   // Check if won
   if (
     flattenArray(boardCopy).filter((square) => !square.clear && !square.mine)
@@ -80,6 +84,7 @@ const clearSquare = (state, action) => {
   ) {
     gameOver = true;
     winner = true;
+    winTime = Math.floor((Date.now() - state.time) / 1000);
   }
 
   return {
@@ -87,6 +92,7 @@ const clearSquare = (state, action) => {
     board: boardCopy,
     gameOver,
     winner,
+    winTime,
   };
 };
 
