@@ -425,4 +425,54 @@ describe("minesweeper redux store", () => {
       ]);
     });
   });
+
+  // describe("save score to firebase action", () => {
+  //   let store;
+  //   let initialState;
+  //   beforeEach(() => {
+  //     initialState = {
+  //       minesweeper: {
+  //         board: copyBoard(testBoard),
+  //         gameOver: true,
+  //         winner: true,
+  //         difficulty: "Easy",
+  //         winTime: 10,
+  //         scores: {
+  //           Easy: [
+  //             { name: "bob", score: 22 },
+  //             { name: "bill", score: 28 },
+  //             { name: "bob2", score: 32 },
+  //             { name: "bill2", score: 55 },
+  //             { name: "bob3", score: 59 },
+  //             { name: "bill3", score: 65 },
+  //             { name: "bob4", score: 72 },
+  //             { name: "bill4", score: 95 },
+  //             { name: "bob5", score: 100 },
+  //             { name: "bill5", score: 155 },
+  //           ],
+  //           Medium: [
+  //             { name: "mark", score: 25 },
+  //             { name: "matt", score: 88 },
+  //           ],
+  //           Hard: [
+  //             { name: "jeff", score: 122 },
+  //             { name: "jack", score: 999 },
+  //           ],
+  //         },
+  //       },
+  //     };
+
+  //     store = createStore(
+  //       rootReducer,
+  //       initialState,
+  //       composeEnhancers(applyMiddleware(thunk))
+  //     );
+
+  //     return;
+  //   });
+
+  //   it("should send new score to firebase if better than 10th score", () => {
+      
+  //   });
+  // });
 });

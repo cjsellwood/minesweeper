@@ -52,3 +52,7 @@ export const submitScore = (name) => {
     name,
   };
 };
+
+// export const saveScore = (name, winTime, difficulty) => {
+//   return (dispatch) => {};
+// };

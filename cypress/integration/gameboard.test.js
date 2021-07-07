@@ -51,7 +51,9 @@ describe("Gameboard test", () => {
   });
 
   it("should have all mines flagged and no mines shown", () => {
-    cy.get("div[data-cypress='no-mine']").click({ multiple: true });
+    cy.get("div[data-cypress='no-mine']").each((el) => {
+      el.click();
+    });
     cy.get("div.flag").should("have.length", 15);
     cy.get("p.mine").should("have.length", 0);
   });

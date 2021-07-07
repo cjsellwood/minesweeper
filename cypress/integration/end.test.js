@@ -52,7 +52,9 @@ describe("Winning game", () => {
   before(() => {
     cy.visit("/");
     cy.contains("Start").click();
-    cy.get("div[data-cypress='no-mine']").click({ multiple: true });
+    cy.get("div[data-cypress='no-mine']").each((el) => {
+      el.click();
+    });
   });
 
   it("should show that game was won", () => {
