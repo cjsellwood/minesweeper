@@ -3,10 +3,21 @@ import { connect } from "react-redux";
 import * as actions from "../store/actions/index";
 
 export const EndScreen = (props) => {
+  const [worstScore, setWorstScore] = useState(9999999);
+
   useEffect(() => {
+    // Fetch high scores on first load
     if (!props.isFetched) {
       props.fetchScores();
     }
+
+    // Calculate worst score on scoreboard to beat
+    if (props.scores[props.difficulty].length < 10) {
+      setWorstScore(9999999);
+    } else {
+      setWorstScore(props.scores[props.difficulty][9]);
+    }
+
     // eslint-disable-next-line
   }, []);
 
@@ -16,7 +27,10 @@ export const EndScreen = (props) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.submitScore(name);
+    // Only submit if will be on scoreboard
+    if (props.winTime < worstScore) {
+      props.postScore(name, props.winTime, props.difficulty);
+    }
   };
   return (
     <div className="EndScreen">
@@ -66,7 +80,7 @@ export const EndScreen = (props) => {
         </div>
       ) : null}
 
-      {props.winner ? (
+      {props.winner && props.winTime < worstScore ? (
         <form onSubmit={(e) => handleSubmit(e)}>
           <label htmlFor="name">Enter Name</label>
           <input id="name" type="text" value={name} onChange={handleChange} />
@@ -93,6 +107,7 @@ const mapStateToProps = (state) => {
     winTime: state.minesweeper.winTime,
     scores: state.minesweeper.scores,
     isFetched: state.minesweeper.isFetched,
+    difficulty: state.minesweeper.difficulty,
   };
 };
 
@@ -101,8 +116,8 @@ const mapDispatchToProps = (dispatch) => {
     restartGame: () => {
       dispatch(actions.restartGame());
     },
-    submitScore: (name) => {
-      dispatch(actions.submitScore(name));
+    postScore: (name, winTime, difficulty, worstScore) => {
+      dispatch(actions.postScore(name, winTime, difficulty, worstScore));
     },
     fetchScores: () => {
       dispatch(actions.fetchScores());

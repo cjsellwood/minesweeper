@@ -4,18 +4,21 @@ describe("EndScreen", () => {
       "GET",
       "https://minesweeper-237c5-default-rtdb.firebaseio.com/scores.json",
       {
-        Easy: {
-          "Test User": 1234,
-        },
-        Medium: {
-          "Test User 2": 4452,
-        },
-        Hard: {
-          "Test User 3": 32455,
-          "Test User 4": 9999,
+        statusCode: 200,
+        body: {
+          Easy: {
+            "Test User": 1234,
+          },
+          Medium: {
+            "Test User 2": 4452,
+          },
+          Hard: {
+            "Test User 3": 32455,
+            "Test User 4": 9999,
+          },
         },
       }
-    );
+    ).as("fetchScores");
   });
 
   it("calls the firebase api to get high scores", () => {
@@ -24,6 +27,7 @@ describe("EndScreen", () => {
     cy.get("div[data-cypress='no-mine']").each((el) => {
       el.click();
     });
+    cy.wait("@fetchScores");
     cy.get("div.EndScreen").contains("Test User 3");
   });
 
@@ -45,18 +49,22 @@ describe("EndScreen", () => {
         "GET",
         "https://minesweeper-237c5-default-rtdb.firebaseio.com/scores.json",
         {
-          Easy: {
-            "Test User": 1234,
-          },
-          Medium: {
-            "Test User 2": 4452,
-          },
-          Hard: {
-            "Test User 3": 32455,
-            "Test User 4": 9999,
+          statusCode: 200,
+          body: {
+            Easy: {
+              "Test User": 1234,
+            },
+            Medium: {
+              "Test User 2": 4452,
+            },
+            Hard: {
+              "Test User 3": 32455,
+              "Test User 4": 9999,
+            },
           },
         }
-      );
+      ).as("fetchScores");
+
       cy.visit("/");
       cy.contains("Start").click();
 
@@ -99,18 +107,22 @@ describe("EndScreen", () => {
         "GET",
         "https://minesweeper-237c5-default-rtdb.firebaseio.com/scores.json",
         {
-          Easy: {
-            "Test User": 1234,
-          },
-          Medium: {
-            "Test User 2": 4452,
-          },
-          Hard: {
-            "Test User 3": 32455,
-            "Test User 4": 9999,
+          statusCode: 200,
+          body: {
+            Easy: {
+              "Test User": 1234,
+            },
+            Medium: {
+              "Test User 2": 4452,
+            },
+            Hard: {
+              "Test User 3": 32455,
+              "Test User 4": 9999,
+            },
           },
         }
-      );
+      ).as("fetchScores");
+
       cy.visit("/");
       cy.contains("Start").click();
       cy.get("div[data-cypress='no-mine']").each((el) => {
@@ -145,6 +157,16 @@ describe("EndScreen", () => {
     });
 
     it("submits score to scoreboard", () => {
+      cy.intercept(
+        "PATCH",
+        "https://minesweeper-237c5-default-rtdb.firebaseio.com/scores/Easy.json",
+        {
+          statusCode: 200,
+          body: {
+            message: "Done",
+          },
+        }
+      );
       cy.get("button[type='submit']").click();
       cy.get("div.EndScreen").contains("test name");
     });

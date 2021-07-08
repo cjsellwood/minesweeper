@@ -46,13 +46,6 @@ export const restartGame = () => {
   };
 };
 
-export const submitScore = (name) => {
-  return {
-    type: actionTypes.SUBMIT_SCORE,
-    name,
-  };
-};
-
 export const fetchScores = () => {
   return (dispatch) => {
     return fetch(
@@ -73,6 +66,28 @@ export const saveFetchedScores = (scores) => {
   };
 };
 
-// export const saveScore = (name, winTime, difficulty) => {
-//   return (dispatch) => {};
-// };
+export const postScore = (name, winTime, difficulty) => {
+  return (dispatch) => {
+    fetch(
+      `https://minesweeper-237c5-default-rtdb.firebaseio.com/scores/${difficulty}.json`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({
+          [name]: winTime,
+        }),
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        dispatch(submitScore(name));
+      });
+  };
+};
+
+export const submitScore = (name) => {
+  return {
+    type: actionTypes.SUBMIT_SCORE,
+    name,
+  };
+};

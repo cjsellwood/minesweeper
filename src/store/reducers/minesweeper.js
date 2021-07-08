@@ -137,13 +137,15 @@ const submitScore = (state, action) => {
 const saveFetchedScores = (state, action) => {
   let newScores = {};
   for (let difficulty in action.scores) {
-    const array = [];
+    let array = [];
     for (let score in action.scores[difficulty]) {
-      array.push({ "name": score, "score": action.scores[difficulty][score] });
+      array.push({ name: score, score: action.scores[difficulty][score] });
     }
     array.sort((a, b) => {
       return a.score - b.score;
     });
+
+    array = array.slice(0, 10);
     newScores[difficulty] = array;
   }
   return {

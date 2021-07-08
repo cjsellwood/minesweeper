@@ -20,6 +20,7 @@ describe("EndScreen Testing", () => {
             Hard: [],
           }}
           fetchScores={fetchScores}
+          difficulty={"Easy"}
         />
       );
     });
@@ -51,6 +52,7 @@ describe("EndScreen Testing", () => {
             Medium: [],
             Hard: [],
           }}
+          difficulty={"Easy"}
           fetchScores={fetchScores}
         />
       );
@@ -82,6 +84,7 @@ describe("EndScreen Testing", () => {
             Hard: [],
           }}
           fetchScores={fetchScores}
+          difficulty={"Easy"}
         />
       );
     });
@@ -94,26 +97,70 @@ describe("EndScreen Testing", () => {
     });
   });
 
-  describe("Submitting score", () => {
-    let submitScore;
+  describe("When game won but score too low for scoreboard", () => {
+    let postScore;
+    let difficulty = "Easy";
+    let winTime = 100;
     beforeEach(() => {
-      submitScore = jest.fn().mockName("submitScore");
+      postScore = jest.fn().mockName("postScore");
       context = render(
         <EndScreen
           gameOver={true}
           winner={true}
-          submitScore={submitScore}
+          postScore={postScore}
+          scores={{
+            Easy: [
+              { a: 1 },
+              { b: 2 },
+              { c: 3 },
+              { d: 4 },
+              { e: 5 },
+              { f: 6 },
+              { g: 7 },
+              { h: 8 },
+              { i: 9 },
+              { j: 10 },
+            ],
+            Medium: [],
+            Hard: [],
+          }}
+          fetchScores={fetchScores}
+          winTime={winTime}
+          difficulty={difficulty}
+        />
+      );
+    });
+
+    it("should not display submit score form", () => {
+      const { queryByText } = context;
+      expect(queryByText("Submit Score")).toBeNull();
+    });
+  });
+
+  describe("Submitting score", () => {
+    let postScore;
+    let difficulty = "Easy";
+    let winTime = 100;
+    beforeEach(() => {
+      postScore = jest.fn().mockName("postScore");
+      context = render(
+        <EndScreen
+          gameOver={true}
+          winner={true}
+          postScore={postScore}
           scores={{
             Easy: [],
             Medium: [],
             Hard: [],
           }}
           fetchScores={fetchScores}
+          winTime={winTime}
+          difficulty={difficulty}
         />
       );
     });
 
-    it("should call submitScore", () => {
+    it("should call postScore", () => {
       const name = "test name";
       const { getByLabelText, getByText } = context;
 
@@ -121,7 +168,7 @@ describe("EndScreen Testing", () => {
 
       userEvent.click(getByText("Submit Score"));
 
-      expect(submitScore).toHaveBeenCalledWith(name);
+      expect(postScore).toHaveBeenCalledWith(name, winTime, difficulty);
     });
   });
 
@@ -147,6 +194,7 @@ describe("EndScreen Testing", () => {
           }}
           fetchScores={fetchScores}
           isFetched={true}
+          difficulty={"Easy"}
         />
       );
     });
@@ -171,8 +219,10 @@ describe("EndScreen Testing", () => {
             Medium: [],
             Hard: [],
           }}
+          isFetched={false}
           fetchedScores={false}
           fetchScores={fetchScores}
+          difficulty={"Easy"}
         />
       );
       expect(fetchScores).toHaveBeenCalled();
@@ -191,6 +241,7 @@ describe("EndScreen Testing", () => {
           }}
           isFetched={true}
           fetchScores={fetchScores}
+          difficulty={"Easy"}
         />
       );
       expect(fetchScores).not.toHaveBeenCalled();
