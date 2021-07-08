@@ -55,16 +55,14 @@ export const submitScore = (name) => {
 
 export const fetchScores = () => {
   return (dispatch) => {
-    return fetch("https://minesweeper-237c5-default-rtdb.firebaseio.com/scores", {
-      method: "GET",
-      mode: "no-cors",
-    })
-      .then((response) => {
-        return response.json();
-      })
+    return fetch(
+      "https://minesweeper-237c5-default-rtdb.firebaseio.com/scores.json"
+    )
+      .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-      });
+        dispatch(saveFetchedScores(data));
+      })
+      .catch((error) => {});
   };
 };
 

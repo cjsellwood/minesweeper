@@ -2,7 +2,7 @@ describe("EndScreen", () => {
   before(() => {
     cy.intercept(
       "GET",
-      "https://minesweeper-237c5-default-rtdb.firebaseio.com/scores",
+      "https://minesweeper-237c5-default-rtdb.firebaseio.com/scores.json",
       {
         Easy: {
           "Test User": 1234,
@@ -41,6 +41,22 @@ describe("EndScreen", () => {
 
   describe("Losing game", () => {
     before(() => {
+      cy.intercept(
+        "GET",
+        "https://minesweeper-237c5-default-rtdb.firebaseio.com/scores.json",
+        {
+          Easy: {
+            "Test User": 1234,
+          },
+          Medium: {
+            "Test User 2": 4452,
+          },
+          Hard: {
+            "Test User 3": 32455,
+            "Test User 4": 9999,
+          },
+        }
+      );
       cy.visit("/");
       cy.contains("Start").click();
 
@@ -79,6 +95,22 @@ describe("EndScreen", () => {
 
   describe("Winning game", () => {
     before(() => {
+      cy.intercept(
+        "GET",
+        "https://minesweeper-237c5-default-rtdb.firebaseio.com/scores.json",
+        {
+          Easy: {
+            "Test User": 1234,
+          },
+          Medium: {
+            "Test User 2": 4452,
+          },
+          Hard: {
+            "Test User 3": 32455,
+            "Test User 4": 9999,
+          },
+        }
+      );
       cy.visit("/");
       cy.contains("Start").click();
       cy.get("div[data-cypress='no-mine']").each((el) => {

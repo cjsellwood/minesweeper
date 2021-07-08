@@ -429,56 +429,103 @@ describe("minesweeper redux store", () => {
   });
 
   describe("fetch high score data from firebase", () => {
-    let store;
-    let initialState;
+    describe("when loading is successful", () => {
+      let store;
+      let initialState;
+      let originalFetch;
 
-    const fetchMock = jest.spyOn(global, "fetch").mockImplementation(() =>
-      Promise.resolve({
-        json: () => {
-          Promise.resolve(fetched);
-        },
-      })
-    );
-
-    const fetched = {
-      Easy: { "Fire 1": 888, "Water 1": 111 },
-      Medium: { "Fire 2": 999, "Water 2": 1002 },
-      Hard: { "Fire 3": 777 },
-    };
-
-    beforeEach(() => {
-      initialState = {
-        minesweeper: {
-          board: copyBoard(testBoard),
-          gameOver: true,
-          winner: true,
-          difficulty: "Easy",
-          winTime: 10,
-          scores: {
-            Easy: [],
-            Medium: [],
-            Hard: [],
-          },
-        },
+      const fetched = {
+        Easy: { "Fire 1": 888, "Water 1": 111 },
+        Medium: { "Fire 2": 999, "Water 2": 1002 },
+        Hard: { "Fire 3": 777 },
       };
 
-      store = createStore(
-        rootReducer,
-        initialState,
-        composeEnhancers(applyMiddleware(thunk))
-      );
+      beforeEach(() => {
+        originalFetch = window.fetch;
+        window.fetch = jest
+          .fn()
+          .mockImplementation(() =>
+            Promise.resolve({ json: () => Promise.resolve(fetched) })
+          );
+        initialState = {
+          minesweeper: {
+            board: copyBoard(testBoard),
+            gameOver: true,
+            winner: true,
+            difficulty: "Easy",
+            winTime: 10,
+            scores: {
+              Easy: [],
+              Medium: [],
+              Hard: [],
+            },
+            isFetched: false,
+          },
+        };
 
-      return store.dispatch(fetchScores());
+        store = createStore(
+          rootReducer,
+          initialState,
+          composeEnhancers(applyMiddleware(thunk))
+        );
+
+        return store.dispatch(fetchScores());
+      });
+
+      afterEach(() => {
+        window.fetch = originalFetch;
+      });
+
+      it("should fetch high scores", () => {
+        expect(fetch).toHaveBeenCalled();
+        expect(store.getState().minesweeper.scores.Easy).toEqual([
+          { name: "Water 1", score: 111 },
+          { name: "Fire 1", score: 888 },
+        ]);
+      });
     });
 
-    it("should fetch high scores", () => {
-      expect(fetchMock).toHaveBeenCalled(
-        "https://minesweeper-237c5-default-rtdb.firebaseio.com/scores",
-        {
-          method: "GET",
-          mode: "no-cors",
-        }
-      );
+    describe("when loading is unsuccessful", () => {
+      let store;
+      let initialState;
+      let originalFetch;
+
+      beforeEach(() => {
+        originalFetch = window.fetch;
+        window.fetch = jest.fn().mockImplementation(() => Promise.reject());
+        initialState = {
+          minesweeper: {
+            board: copyBoard(testBoard),
+            gameOver: true,
+            winner: true,
+            difficulty: "Easy",
+            winTime: 10,
+            scores: {
+              Easy: [],
+              Medium: [],
+              Hard: [],
+            },
+            isFetched: false,
+          },
+        };
+
+        store = createStore(
+          rootReducer,
+          initialState,
+          composeEnhancers(applyMiddleware(thunk))
+        );
+
+        return store.dispatch(fetchScores());
+      });
+
+      afterEach(() => {
+        window.fetch = originalFetch;
+      });
+
+      it("should do nothing", () => {
+        expect(fetch).toHaveBeenCalled();
+        expect(store.getState().minesweeper.scores.Easy).toEqual([]);
+      });
     });
   });
 
@@ -522,6 +569,10 @@ describe("minesweeper redux store", () => {
         { name: "Water 1", score: 111 },
         { name: "Fire 1", score: 888 },
       ]);
+    });
+
+    it("should mark high scores as fetched", () => {
+      expect(store.getState().minesweeper.isFetched).toEqual(true);
     });
   });
 

@@ -146,6 +146,7 @@ describe("EndScreen Testing", () => {
             ],
           }}
           fetchScores={fetchScores}
+          isFetched={true}
         />
       );
     });

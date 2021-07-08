@@ -25,28 +25,47 @@ export const EndScreen = (props) => {
         <h2 className="win-time">Time: {props.winTime}s</h2>
       ) : null}
 
-      <div>
+      {props.isFetched ? (
         <div>
-          <h2>Easy</h2>
-          <ol>
-            {props.scores["Easy"].map((score, i) => {
-              return (
-                <li key={"Easy-" + i}>
-                  <p>{score.name}</p> <p>{score.score}</p>
-                </li>
-              );
-            })}
-          </ol>
+          <div>
+            <h2>Easy</h2>
+            <ol>
+              {props.scores["Easy"].map((score, i) => {
+                return (
+                  <li key={"Easy-" + i}>
+                    <p>{score.name}</p> <p>{score.score}</p>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+          <div>
+            <h2>Medium</h2>
+            <ol>
+              {props.scores["Medium"].map((score, i) => {
+                return (
+                  <li key={"Medium-" + i}>
+                    <p>{score.name}</p> <p>{score.score}</p>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+          <div>
+            <h2>Hard</h2>
+            <ol>
+              {props.scores["Hard"].map((score, i) => {
+                return (
+                  <li key={"Hard-" + i}>
+                    <p>{score.name}</p> <p>{score.score}</p>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
         </div>
-        <div>
-          <h2>Medium</h2>
-          <ol></ol>
-        </div>
-        <div>
-          <h2>Hard</h2>
-          <ol></ol>
-        </div>
-      </div>
+      ) : null}
+
       {props.winner ? (
         <form onSubmit={(e) => handleSubmit(e)}>
           <label htmlFor="name">Enter Name</label>
