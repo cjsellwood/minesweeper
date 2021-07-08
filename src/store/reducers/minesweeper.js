@@ -16,6 +16,7 @@ const initialState = {
     Medium: [],
     Hard: [],
   },
+  isFetched: false,
 };
 
 const storeDifficulty = (state, action) => {
@@ -133,6 +134,27 @@ const submitScore = (state, action) => {
   };
 };
 
+const saveFetchedScores = (state, action) => {
+  let newScores = {};
+  for (let difficulty in action.scores) {
+    let array = [];
+    for (let score in action.scores[difficulty]) {
+      array.push({ name: score, score: action.scores[difficulty][score] });
+    }
+    array.sort((a, b) => {
+      return a.score - b.score;
+    });
+
+    array = array.slice(0, 10);
+    newScores[difficulty] = array;
+  }
+  return {
+    ...state,
+    scores: newScores,
+    isFetched: true,
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.STORE_DIFFICULTY:
@@ -147,6 +169,8 @@ const reducer = (state = initialState, action) => {
       return restartGame(state, action);
     case actionTypes.SUBMIT_SCORE:
       return submitScore(state, action);
+    case actionTypes.SAVE_FETCHED_SCORES:
+      return saveFetchedScores(state, action);
     default:
       return state;
   }

@@ -5,4 +5,7 @@ export {
   clearSquare,
   restartGame,
   submitScore,
+  fetchScores,
+  saveFetchedScores,
+  postScore,
 } from "./minesweeper";

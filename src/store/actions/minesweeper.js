@@ -46,13 +46,48 @@ export const restartGame = () => {
   };
 };
 
+export const fetchScores = () => {
+  return (dispatch) => {
+    return fetch(
+      "https://minesweeper-237c5-default-rtdb.firebaseio.com/scores.json"
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        dispatch(saveFetchedScores(data));
+      })
+      .catch((error) => {});
+  };
+};
+
+export const saveFetchedScores = (scores) => {
+  return {
+    type: actionTypes.SAVE_FETCHED_SCORES,
+    scores,
+  };
+};
+
+export const postScore = (name, winTime, difficulty) => {
+  return (dispatch) => {
+    fetch(
+      `https://minesweeper-237c5-default-rtdb.firebaseio.com/scores/${difficulty}.json`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({
+          [name]: winTime,
+        }),
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        dispatch(submitScore(name));
+      });
+  };
+};
+
 export const submitScore = (name) => {
   return {
     type: actionTypes.SUBMIT_SCORE,
     name,
   };
 };
-
-// export const saveScore = (name, winTime, difficulty) => {
-//   return (dispatch) => {};
-// };

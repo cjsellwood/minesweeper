@@ -1,15 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import * as actions from "../store/actions/index";
 
 export const EndScreen = (props) => {
+  const [worstScore, setWorstScore] = useState(9999999);
+
+  useEffect(() => {
+    // Fetch high scores on first load
+    if (!props.isFetched) {
+      props.fetchScores();
+    }
+
+    // Calculate worst score on scoreboard to beat
+    if (props.scores[props.difficulty].length < 10) {
+      setWorstScore(9999999);
+    } else {
+      setWorstScore(props.scores[props.difficulty][9]);
+    }
+
+    // eslint-disable-next-line
+  }, []);
+
   const [name, setName] = useState("");
   const handleChange = (e) => {
     setName(e.target.value);
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.submitScore(name);
+    // Only submit if will be on scoreboard
+    if (props.winTime < worstScore) {
+      props.postScore(name, props.winTime, props.difficulty);
+    }
   };
   return (
     <div className="EndScreen">
@@ -18,29 +39,48 @@ export const EndScreen = (props) => {
         <h2 className="win-time">Time: {props.winTime}s</h2>
       ) : null}
 
-      <div>
+      {props.isFetched ? (
         <div>
-          <h2>Easy</h2>
-          <ol>
-            {props.scores["Easy"].map((score, i) => {
-              return (
-                <li key={"Easy-" + i}>
-                  <p>{score.name}</p> <p>{score.score}</p>
-                </li>
-              );
-            })}
-          </ol>
+          <div>
+            <h2>Easy</h2>
+            <ol>
+              {props.scores["Easy"].map((score, i) => {
+                return (
+                  <li key={"Easy-" + i}>
+                    <p>{score.name}</p> <p>{score.score}</p>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+          <div>
+            <h2>Medium</h2>
+            <ol>
+              {props.scores["Medium"].map((score, i) => {
+                return (
+                  <li key={"Medium-" + i}>
+                    <p>{score.name}</p> <p>{score.score}</p>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+          <div>
+            <h2>Hard</h2>
+            <ol>
+              {props.scores["Hard"].map((score, i) => {
+                return (
+                  <li key={"Hard-" + i}>
+                    <p>{score.name}</p> <p>{score.score}</p>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
         </div>
-        <div>
-          <h2>Medium</h2>
-          <ol></ol>
-        </div>
-        <div>
-          <h2>Hard</h2>
-          <ol></ol>
-        </div>
-      </div>
-      {props.winner ? (
+      ) : null}
+
+      {props.winner && props.winTime < worstScore ? (
         <form onSubmit={(e) => handleSubmit(e)}>
           <label htmlFor="name">Enter Name</label>
           <input id="name" type="text" value={name} onChange={handleChange} />
@@ -66,6 +106,8 @@ const mapStateToProps = (state) => {
     winner: state.minesweeper.winner,
     winTime: state.minesweeper.winTime,
     scores: state.minesweeper.scores,
+    isFetched: state.minesweeper.isFetched,
+    difficulty: state.minesweeper.difficulty,
   };
 };
 
@@ -74,8 +116,11 @@ const mapDispatchToProps = (dispatch) => {
     restartGame: () => {
       dispatch(actions.restartGame());
     },
-    submitScore: (name) => {
-      dispatch(actions.submitScore(name));
+    postScore: (name, winTime, difficulty, worstScore) => {
+      dispatch(actions.postScore(name, winTime, difficulty, worstScore));
+    },
+    fetchScores: () => {
+      dispatch(actions.fetchScores());
     },
   };
 };
