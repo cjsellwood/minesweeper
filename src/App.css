@@ -5,7 +5,7 @@ html * {
 
 :root {
   --app-background: rgb(0, 18, 53);
-  --button-background: rgb(191, 246, 129);
+  --button-background: rgb(169, 255, 158);
   --board-background: rgb(122, 122, 122);
   --unclear-background: rgb(216, 216, 216);
   --unclear-hover-background: rgb(219, 219, 219);
@@ -392,6 +392,7 @@ html * {
 }
 
 .name-form input::placeholder {
+  color: rgb(160, 160, 160);
 }
 
 .button.small {
