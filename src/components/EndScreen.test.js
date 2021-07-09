@@ -21,6 +21,7 @@ describe("EndScreen Testing", () => {
           }}
           fetchScores={fetchScores}
           difficulty={"Easy"}
+          scoreSubmitted={false}
         />
       );
     });
@@ -37,7 +38,7 @@ describe("EndScreen Testing", () => {
 
     it("should contain the time taken to win", () => {
       const { queryByText } = context;
-      expect(queryByText("Time: 7s")).not.toBeNull();
+      expect(queryByText("Your Score: 7")).not.toBeNull();
     });
   });
 
