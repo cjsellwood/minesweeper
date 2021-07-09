@@ -354,6 +354,8 @@ describe("minesweeper redux store", () => {
       expect(store.getState().minesweeper.startGame).toEqual(false);
       expect(store.getState().minesweeper.winner).toEqual(false);
       expect(store.getState().minesweeper.board).toEqual([]);
+      expect(store.getState().minesweeper.winTime).toBeNull();
+      expect(store.getState().minesweeper.scoreSubmitted).toEqual(false);
     });
   });
 
@@ -548,6 +550,7 @@ describe("minesweeper redux store", () => {
               Hard: [],
             },
             isFetched: false,
+            scoreSubmitted: false,
           },
         };
 
@@ -570,6 +573,7 @@ describe("minesweeper redux store", () => {
           name: name,
           score: 10,
         });
+        expect(store.getState().minesweeper.scoreSubmitted).toEqual(true);
       });
     });
   });
@@ -586,6 +590,7 @@ describe("minesweeper redux store", () => {
           winner: true,
           difficulty: "Easy",
           winTime: 10,
+          scoreSubmitted: false,
           scores: {
             Easy: [
               { name: "bob", score: 22 },
@@ -626,6 +631,7 @@ describe("minesweeper redux store", () => {
         name: "test name",
         score: 10,
       });
+      expect(store.getState().minesweeper.scoreSubmitted).toEqual(true);
     });
 
     it("should not save the score if not better than 10th place", () => {

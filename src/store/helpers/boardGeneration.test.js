@@ -55,13 +55,13 @@ describe("populate mines function", () => {
     ).toEqual(15);
   });
 
-  it("should add 135 mines on easy difficulty", () => {
+  it("should add 180 mines on easy difficulty", () => {
     let board = generateBoard("Hard");
     board = populateMines("Hard", board);
 
     expect(
       flattenArray(board).filter((square) => square.mine === true).length
-    ).toEqual(135);
+    ).toEqual(180);
   });
 });
 

@@ -47,10 +47,10 @@ export const populateMines = (difficulty, board) => {
       mines = 15;
       break;
     case "Medium":
-      mines = 60;
+      mines = 70;
       break;
     case "Hard":
-      mines = 135;
+      mines = 180;
       break;
     default:
       break;

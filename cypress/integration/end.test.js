@@ -96,7 +96,7 @@ describe("EndScreen", () => {
     });
 
     it("should go to start screen if pressing restart", () => {
-      cy.get("button.restart-button").click();
+      cy.contains("Restart").click();
       cy.contains("Minesweeper");
     });
   });
@@ -142,7 +142,7 @@ describe("EndScreen", () => {
       cy.get("div.EndScreen").contains("Easy");
       cy.get("div.EndScreen").contains("Medium");
       cy.get("div.EndScreen").contains("Hard");
-      cy.get("ol").should("have.length", 3);
+      cy.get("ul").should("have.length", 9);
     });
 
     it("should show a form to submit score", () => {

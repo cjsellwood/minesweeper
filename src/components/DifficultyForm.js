@@ -13,41 +13,47 @@ export const DifficultyForm = (props) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="DifficultyForm">
       <h2>Choose Difficulty</h2>
-      <div>
-        <input
-          type="radio"
-          name="difficulty"
-          id="Easy"
-          value="Easy"
-          defaultChecked={props.difficulty === "Easy"}
-          onChange={handleChange}
-          data-testid="easy-difficulty"
-        />
-        <label htmlFor="Easy">Easy</label>
-        <input
-          type="radio"
-          name="difficulty"
-          id="Medium"
-          value="Medium"
-          defaultChecked={props.difficulty === "Medium"}
-          onChange={handleChange}
-          data-testid="medium-difficulty"
-        />
-        <label htmlFor="Medium">Medium</label>
-        <input
-          type="radio"
-          name="difficulty"
-          id="Hard"
-          value="Hard"
-          defaultChecked={props.difficulty === "Hard"}
-          onChange={handleChange}
-        />
-        <label htmlFor="Hard">Hard</label>
+      <div className="radio-container">
         <div>
-          <button type="submit">Start</button>
+          <input
+            type="radio"
+            name="difficulty"
+            id="Easy"
+            value="Easy"
+            defaultChecked={props.difficulty === "Easy"}
+            onChange={handleChange}
+            data-testid="easy-difficulty"
+          />
+          <label htmlFor="Easy">Easy</label>
         </div>
+        <div>
+          <input
+            type="radio"
+            name="difficulty"
+            id="Medium"
+            value="Medium"
+            defaultChecked={props.difficulty === "Medium"}
+            onChange={handleChange}
+            data-testid="medium-difficulty"
+          />
+          <label htmlFor="Medium">Medium</label>
+        </div>
+        <div>
+          <input
+            type="radio"
+            name="difficulty"
+            id="Hard"
+            value="Hard"
+            defaultChecked={props.difficulty === "Hard"}
+            onChange={handleChange}
+          />
+          <label htmlFor="Hard">Hard</label>
+        </div>
+      </div>
+      <div className="center-container">
+        <button className="button" type="submit">Start</button>
       </div>
     </form>
   );

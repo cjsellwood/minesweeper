@@ -12,8 +12,8 @@ Click interactions
 Win condition
 Timer
 Highscores
+Highscores - firebase
 
 IN PROGRESS
-Highscores - firebase
 
 TODO

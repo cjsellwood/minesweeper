@@ -17,6 +17,7 @@ const initialState = {
     Hard: [],
   },
   isFetched: false,
+  scoreSubmitted: false,
 };
 
 const storeDifficulty = (state, action) => {
@@ -109,6 +110,8 @@ const restartGame = (state, action) => {
     startGame: false,
     board: [],
     winner: false,
+    winTime: null,
+    scoreSubmitted: false
   };
 };
 
@@ -131,6 +134,7 @@ const submitScore = (state, action) => {
       ...state.scores,
       [state.difficulty]: newScores,
     },
+    scoreSubmitted: true,
   };
 };
 
