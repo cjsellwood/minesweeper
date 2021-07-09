@@ -15,5 +15,6 @@ Highscores
 Highscores - firebase
 
 IN PROGRESS
+See if can fix issue regarding firebase replacing scores with lower scores
 
 TODO

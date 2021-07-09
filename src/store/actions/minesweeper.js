@@ -90,3 +90,9 @@ export const submitScore = (name) => {
     name,
   };
 };
+
+export const setScoreSubmitted = () => {
+  return {
+    type: actionTypes.SET_SCORE_SUBMITTED,
+  };
+};

@@ -111,16 +111,16 @@ describe("EndScreen Testing", () => {
           postScore={postScore}
           scores={{
             Easy: [
-              { a: 1 },
-              { b: 2 },
-              { c: 3 },
-              { d: 4 },
-              { e: 5 },
-              { f: 6 },
-              { g: 7 },
-              { h: 8 },
-              { i: 9 },
-              { j: 10 },
+              { name: "a", score: 1 },
+              { name: "b", score: 2 },
+              { name: "c", score: 3 },
+              { name: "d", score: 4 },
+              { name: "e", score: 5 },
+              { name: "f", score: 6 },
+              { name: "g", score: 7 },
+              { name: "h", score: 8 },
+              { name: "i", score: 9 },
+              { name: "j", score: 10 },
             ],
             Medium: [],
             Hard: [],
@@ -170,6 +170,54 @@ describe("EndScreen Testing", () => {
       userEvent.click(getByText("Submit Score"));
 
       expect(postScore).toHaveBeenCalledWith(name, winTime, difficulty);
+    });
+  });
+
+  describe("Submitting a users second score", () => {
+    let postScore;
+    let setScoreSubmitted;
+    let difficulty = "Easy";
+    let winTime = 7;
+    beforeEach(() => {
+      postScore = jest.fn().mockName("postScore");
+      setScoreSubmitted = jest.fn().mockName("setScoreSubmitted");
+      context = render(
+        <EndScreen
+          gameOver={true}
+          winner={true}
+          postScore={postScore}
+          scores={{
+            Easy: [
+              { name: "a", score: 1 },
+              { name: "b", score: 2 },
+              { name: "c", score: 3 },
+              { name: "d", score: 4 },
+              { name: "test name", score: 5 },
+              { name: "f", score: 6 },
+              { name: "g", score: 7 },
+              { name: "h", score: 8 },
+              { name: "i", score: 9 },
+              { name: "j", score: 10 },
+            ],
+            Medium: [],
+            Hard: [],
+          }}
+          fetchScores={fetchScores}
+          winTime={winTime}
+          difficulty={difficulty}
+          setScoreSubmitted={setScoreSubmitted}
+        />
+      );
+    });
+    it("should not call postScore if user already has a better score", () => {
+      const name = "test name";
+      const { getByLabelText, getByText } = context;
+
+      userEvent.type(getByLabelText("Enter Name"), name);
+
+      userEvent.click(getByText("Submit Score"));
+      expect(postScore).not.toHaveBeenCalled();
+      expect(setScoreSubmitted).toHaveBeenCalled();
     });
   });
 

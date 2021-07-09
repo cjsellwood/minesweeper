@@ -15,7 +15,8 @@ export const EndScreen = (props) => {
     if (props.scores[props.difficulty].length < 10) {
       setWorstScore(9999999);
     } else {
-      setWorstScore(props.scores[props.difficulty][9]);
+      // Set worst score as last value
+      setWorstScore(props.scores[props.difficulty][9].score);
     }
 
     // eslint-disable-next-line
@@ -27,8 +28,18 @@ export const EndScreen = (props) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Only submit if will be on scoreboard
+
+    // If user already has a better score don't submit
+    const usersScore = props.scores[props.difficulty].filter(
+      (user) => user.name === name
+    );
+
+    if (usersScore.length && props.winTime > usersScore[0].score) {
+      props.setScoreSubmitted();
+      return;
+    }
     if (props.winTime < worstScore) {
+      // Only submit if will be on scoreboard
       props.postScore(name, props.winTime, props.difficulty);
     }
   };
@@ -160,6 +171,9 @@ const mapDispatchToProps = (dispatch) => {
     fetchScores: () => {
       dispatch(actions.fetchScores());
     },
+    setScoreSubmitted: () => {
+      dispatch(actions.setScoreSubmitted());
+    }
   };
 };
 

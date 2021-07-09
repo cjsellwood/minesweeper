@@ -10,6 +10,7 @@ import {
   fetchScores,
   saveFetchedScores,
   postScore,
+  setScoreSubmitted,
 } from "../actions";
 import minesweeper from "../reducers/minesweeper";
 import copyBoard from "../helpers/copyBoard";
@@ -649,6 +650,41 @@ describe("minesweeper redux store", () => {
         { name: "bob5", score: 100 },
         { name: "bill5", score: 155 },
       ]);
+    });
+  });
+
+  describe("setScoreSubmitted action", () => {
+    let store;
+    let initialState;
+
+    beforeEach(() => {
+      initialState = {
+        minesweeper: {
+          board: copyBoard(testBoard),
+          gameOver: true,
+          winner: true,
+          difficulty: "Easy",
+          winTime: 10,
+          scoreSubmitted: false,
+          scores: {
+            Easy: [],
+            Medium: [],
+            Hard: [],
+          },
+        },
+      };
+
+      store = createStore(
+        rootReducer,
+        initialState,
+        composeEnhancers(applyMiddleware(thunk))
+      );
+
+      return store.dispatch(setScoreSubmitted());
+    });
+
+    it("should set scoreSubmitted to true to mock submission of a new score that would be worse than the users best", () => {
+      expect(store.getState().minesweeper.scoreSubmitted).toBe(true);
     });
   });
 });

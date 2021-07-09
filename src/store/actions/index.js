@@ -8,4 +8,5 @@ export {
   fetchScores,
   saveFetchedScores,
   postScore,
+  setScoreSubmitted,
 } from "./minesweeper";

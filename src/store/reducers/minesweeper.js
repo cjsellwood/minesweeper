@@ -111,7 +111,7 @@ const restartGame = (state, action) => {
     board: [],
     winner: false,
     winTime: null,
-    scoreSubmitted: false
+    scoreSubmitted: false,
   };
 };
 
@@ -159,6 +159,13 @@ const saveFetchedScores = (state, action) => {
   };
 };
 
+const setScoreSubmitted = (state, action) => {
+  return {
+    ...state,
+    scoreSubmitted: true,
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.STORE_DIFFICULTY:
@@ -175,6 +182,8 @@ const reducer = (state = initialState, action) => {
       return submitScore(state, action);
     case actionTypes.SAVE_FETCHED_SCORES:
       return saveFetchedScores(state, action);
+    case actionTypes.SET_SCORE_SUBMITTED:
+      return setScoreSubmitted(state, action);
     default:
       return state;
   }
