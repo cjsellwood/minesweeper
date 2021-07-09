@@ -170,9 +170,5 @@ describe("EndScreen", () => {
       cy.get("button[type='submit']").click();
       cy.get("div.EndScreen").contains("test name");
     });
-
-    it.only("shows up", () => {
-      cy.viewport(360, 640);
-    });
   });
 });
